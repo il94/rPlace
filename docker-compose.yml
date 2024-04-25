@@ -1,0 +1,53 @@
+version: "3.8"
+
+services:
+  database:
+    container_name: db_rPlace
+    image: postgres:16.1
+    restart: always
+    env_file: .env
+    expose:
+      - '5432'
+    networks:
+      - network_rPlace
+    volumes:
+      - volume_rPlace:/var/lib/postgresql/data
+
+  back:
+    build:
+      context: ./back
+      dockerfile: ./Dockerfile
+    container_name: back_rPlace
+    ports:
+      - '3000:3000'
+      - '5555:5555'
+    depends_on:
+      - database
+    volumes:
+      - ./back:/app
+    networks:
+      - network_rPlace
+
+  front:
+    build:
+      context: ./front
+      dockerfile: ./Dockerfile
+    container_name: front_rPlace
+    ports:
+      - '5173:5173'
+    depends_on:
+      - back
+    volumes:
+      - ./front/src:/app/src
+      - ./front/package.json:/app/package.json
+      - ./front/package-lock.json:/app/package-lock.json
+    networks:
+      - network_rPlace
+
+volumes:
+  volume_rPlace:
+    name: volume_rPlace
+
+networks:
+  network_rPlace:
+    name: network_rPlace
