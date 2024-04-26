@@ -1,29 +1,14 @@
-import { useEffect, useState } from "react"
 import "./App.css"
-import Grid from "./components/Grid"
-import axios, { AxiosResponse } from "axios"
-import { GridType } from "./utils/types"
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import Home from "./pages/Home"
 
 function App() {
-
-	const [grid, setGrid] = useState<GridType | undefined>()
-	useEffect(() => {
-	
-		async function fetchGrid() {
-			try {
-				const gridResponse: AxiosResponse<GridType> = await axios.get(`${import.meta.env.VITE_URL_BACK}/grid`)
-				setGrid(gridResponse.data)
-			}
-			catch (error) {
-				console.log(error)
-			}
-		}
-
-		fetchGrid()
-	}, [])
-
 	return (
-		<Grid grid={grid} />
+		<Router>
+			<Routes>
+				<Route path="/" element={<Home />} />
+			</Routes>
+		</Router>
 	)
 }
 
