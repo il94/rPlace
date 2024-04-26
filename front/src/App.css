@@ -21,3 +21,9 @@ body {
 
 	font-family: "Pixelify Sans", sans-serif;
 }
+
+button {
+	border: none;
+
+	cursor: pointer;
+}

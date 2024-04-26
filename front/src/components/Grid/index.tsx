@@ -1,16 +1,19 @@
+import { CellType, GridType } from "../../utils/types"
 import Cell from "../Cell"
 import { Style } from "./style"
 
-function Grid() {
-
-	const cells = []
-	for (let i = 0; i < 1600; i++) {
-		cells.push(<Cell key={`cell_${i}`} />)
-	}
+type PropsGrid = {
+	grid: GridType | undefined
+}
+function Grid({ grid }: PropsGrid) {
 
 	return (
 		<Style>
-			{cells}
+			{
+				grid && grid.cells.map((cell: CellType, index: number) => 
+					<Cell cell={cell} key={`cell_${index}`} />
+				)
+			}
 		</Style>
 	)
 }
