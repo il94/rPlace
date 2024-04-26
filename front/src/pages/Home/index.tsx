@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Style } from "./style"
+import { Style, Title } from "./style"
 import { GridType } from "../../utils/types"
 import axios, { AxiosResponse } from "axios"
 import Grid from "../../components/Grid"
@@ -21,9 +21,10 @@ function Home() {
 		fetchGrid()
 	}, [])
 
+
 	return (
 		<Style>
-			<h1>r/Place</h1>
+			<Title>r/Place</Title>
 			<Grid grid={grid} />
 		</Style>
 	)

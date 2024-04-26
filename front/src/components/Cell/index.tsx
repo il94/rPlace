@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Style } from "./style";
 import { CellType } from "../../utils/types";
 import axios from "axios";
+import { randomHexColor } from "../../utils/functions";
 
 type PropsCell = {
 	cell: CellType
@@ -17,17 +18,15 @@ function Cell({ cell }: PropsCell) {
 
 		setBackgroundColor(newColor)
 	}
-	function randomHexColor(): string {
-		const randomColor = Math.floor(Math.random() * 16777215).toString(16)
-		return "#" + ("000000" + randomColor).slice(-6)
+
+	function selectCell() {
+		setNewColor(randomHexColor())
 	}
 	
 	const [backgroundColor, setBackgroundColor] = useState(cell.color)
 
 	return (
-		<Style $backgroundColor={backgroundColor} onClick={() => {
-			setNewColor(randomHexColor())
-		}} />
+		<Style $backgroundColor={backgroundColor} onClick={selectCell} />
 	)
 }
 

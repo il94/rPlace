@@ -1,5 +1,3 @@
-import { Socket } from "socket.io-client"
-
 export type GridType = {
 	id:		number,
 	cells:	Cell[1600]
