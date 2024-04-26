@@ -8,8 +8,7 @@ RUN npm install
 
 COPY . .
 
-# COPY ./start.sh /usr/local/bin
-# RUN chmod +x /usr/local/bin/start.sh
+COPY ./start.sh /usr/local/bin
+RUN chmod +x /usr/local/bin/start.sh
 
-CMD ["npm", "run", "start:dev"]
-# ENTRYPOINT ["start.sh"]
+ENTRYPOINT ["start.sh"]
