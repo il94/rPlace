@@ -14,5 +14,15 @@ datasource db {
 }
 
 model Grid {
-	id		Int @id @default(autoincrement())
+    id     Int    @id @default(autoincrement())
+    cells  Cell[] @relation("GridToCell")
+}
+
+model Cell {
+    id			Int		@id @default(autoincrement())
+    grid		Grid	@relation("GridToCell", fields: [gridId], references: [id])
+    gridId		Int
+
+	idOnGrid	Int
+	color		String
 }
