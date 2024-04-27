@@ -3,6 +3,7 @@ import { Style } from "./style";
 import { CellType } from "../../utils/types";
 import axios from "axios";
 import { randomHexColor } from "../../utils/functions";
+import CellPopup from "./CellPopup";
 
 type PropsCell = {
 	cell: CellType
@@ -11,22 +12,26 @@ type PropsCell = {
 function Cell({ cell }: PropsCell) {
 
 	async function setNewColor(newColor: string) {
-
 		await axios.post(`${import.meta.env.VITE_URL_BACK}/cell/${cell.id}/color`, {
 			newColor: newColor
 		})
-
-		setBackgroundColor(newColor)
 	}
 
+
+	const [cellPopup, displayCellpopup] = useState<boolean>(false)
+
+
 	function selectCell() {
+		// displayCellpopup(true)
 		setNewColor(randomHexColor())
 	}
 	
-	const [backgroundColor, setBackgroundColor] = useState(cell.color)
-
 	return (
-		<Style $backgroundColor={backgroundColor} onClick={selectCell} />
+		<>
+			<Style $backgroundColor={cell.color} onClick={selectCell}>
+				{ cellPopup && <CellPopup /> }
+			</Style>
+		</>
 	)
 }
 
