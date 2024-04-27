@@ -5,8 +5,9 @@ import { useEffect, useState } from "react";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { loadFull } from "tsparticles";
 import background from "./utils/background";
+import SocketProvider from "./contexts/socket";
 
-const App = () => {
+function App() {
     const [ init, setInit ] = useState(false)
 
     // this should be run only once per application lifetime
@@ -24,11 +25,13 @@ const App = () => {
     return (
 		<>
 			{ init && <Particles id="tsparticles" options={background} /> }
-			<Router>
-				<Routes>
-					<Route path="/" element={<Home />} />
-				</Routes>
-			</Router>
+			<SocketProvider>
+				<Router>
+					<Routes>
+						<Route path="/" element={<Home />} />
+					</Routes>
+				</Router>
+			</SocketProvider>
 		</>
 	)
 }

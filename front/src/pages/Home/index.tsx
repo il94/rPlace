@@ -1,11 +1,14 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { Style, Title } from "./style"
 import { GridType } from "../../utils/types"
 import axios, { AxiosResponse } from "axios"
 import Grid from "../../components/Grid"
+import { SocketContext } from "../../contexts/socket"
 
 function Home() {
 	const [grid, setGrid] = useState<GridType | undefined>()
+	const { socket } = useContext(SocketContext)
+
 	useEffect(() => {
 	
 		async function fetchGrid() {
@@ -19,8 +22,11 @@ function Home() {
 		}
 
 		fetchGrid()
+		
+		socket.on("newColor", (cellId, newColor) => {
+			console.log("cellId, newColor", cellId, newColor)
+		})
 	}, [])
-
 
 	return (
 		<Style>
