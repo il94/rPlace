@@ -9,8 +9,6 @@ body {
 	height: 100vh;
 
 	overflow: hidden;
-
-	font-family: "Pixelify Sans", sans-serif;
 }
 
 #root {
@@ -18,8 +16,18 @@ body {
 	height: 100%;
 }
 
+p,
+h1,
+h2,
+button {
+	text-align: center;
+	font-family: "Pixelify Sans", sans-serif;
+}
 button {
 	border: none;
 
 	cursor: pointer;
+	outline: none;
+
+	background: none;
 }

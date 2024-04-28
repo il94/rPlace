@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { MouseEvent, useState } from "react";
 import { Style } from "./style";
 import { CellType } from "../../utils/types";
 import axios from "axios";
@@ -17,17 +17,23 @@ function Cell({ cell }: PropsCell) {
 		})
 	}
 
-	const [cellPopup, displayCellpopup] = useState<boolean>(false)
+	const [cellPopup, displayCellPopup] = useState(false)
 
-	function selectCell() {
-		// displayCellpopup(true)
+	function focusCell(event: MouseEvent<HTMLDivElement>) {
+		event.target.focus()
+		displayCellPopup(true)
+		
 		setNewColor(randomHexColor())
+	}
+	function blurCell() {
+		displayCellPopup(false)
 	}
 
 	return (
 		<>
-			<Style $backgroundColor={cell.color} onClick={selectCell}>
-				{ cellPopup && <CellPopup /> }
+			<Style onClick={focusCell} onBlur={blurCell}
+				tabIndex={0} $backgroundColor={cell.color}>
+			{ cellPopup && <CellPopup cell={cell} /> }
 			</Style>
 		</>
 	)
