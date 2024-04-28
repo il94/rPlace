@@ -11,30 +11,14 @@ export const Style = styled.div`
 		width: 480px;		
 	} */
 	/* @media screen and (min-width: 640px) { */
-		width: 640px;		
+		width: 560px;		
 	/* } */
 
 	aspect-ratio: 1;
 	/* height: 640px; */
-	border: solid 8px black;
+	border: solid 16px #2b2b2b;
+	border-radius: 4px;
+	box-shadow: 0px 4px 6px black;
 
-	overflow: scroll;
-
-	&::-webkit-scrollbar {
-		display: none;
-	}
-`
-
-export const DrawingBoard = styled.div<{ $zoom: boolean }>`
-	display: flex;
-	flex-wrap: wrap;
-
-	width: 100%;
-	height: 100%;
-
-	transform: ${({$zoom}) => $zoom && "scale(2)"};
-
-	transform-origin: center;
-
-
+	background-color: white;
 `

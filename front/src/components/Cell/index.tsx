@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Style } from "./style";
 import { CellType } from "../../utils/types";
 import axios from "axios";
@@ -6,11 +6,10 @@ import { randomHexColor } from "../../utils/functions";
 import CellPopup from "./CellPopup";
 
 type PropsCell = {
-	cell: CellType,
-	zoom: boolean
+	cell: CellType
 }
 
-function Cell({ cell, $zoom }: PropsCell) {
+function Cell({ cell }: PropsCell) {
 
 	async function setNewColor(newColor: string) {
 		await axios.post(`${import.meta.env.VITE_URL_BACK}/cell/${cell.id}/color`, {
@@ -21,13 +20,13 @@ function Cell({ cell, $zoom }: PropsCell) {
 	const [cellPopup, displayCellpopup] = useState<boolean>(false)
 
 	function selectCell() {
-		displayCellpopup(true)
+		// displayCellpopup(true)
 		setNewColor(randomHexColor())
 	}
 
 	return (
 		<>
-			<Style $backgroundColor={cell.color} onClick={selectCell} $zoom={$zoom} >
+			<Style $backgroundColor={cell.color} onClick={selectCell}>
 				{ cellPopup && <CellPopup /> }
 			</Style>
 		</>

@@ -6,7 +6,6 @@ import Grid from "../../components/Grid"
 
 function Home() {
 	const [grid, setGrid] = useState<GridType | undefined>()
-	const [$zoom, setZoom] = useState<boolean>(false)
 
 	useEffect(() => {
 	
@@ -26,8 +25,10 @@ function Home() {
 	return (
 		<Style>
 			<Title>r/Place</Title>
-			<button onClick={() => setZoom(!$zoom)} >Zoom</button>
-			{ grid && <Grid grid={grid} setGrid={setGrid} $zoom={$zoom} />}
+			{
+				grid &&
+				<Grid grid={grid} setGrid={setGrid} />
+			}			
 		</Style>
 	)
 }

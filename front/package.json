@@ -17,6 +17,7 @@
     "react-dom": "^18.2.0",
     "react-particles": "2.9.3",
     "react-router-dom": "^6.23.0",
+    "react-zoom-pan-pinch": "^3.4.4",
     "socket.io-client": "^4.7.5",
     "styled-components": "^6.1.8",
     "tsparticles": "^3.3.0"

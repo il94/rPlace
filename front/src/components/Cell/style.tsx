@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const Style = styled.button.attrs<{ $backgroundColor: string, $zoom: boolean }>((props) => ({
+export const Style = styled.button.attrs<{ $backgroundColor: string }>((props) => ({
     style: {
         backgroundColor: props.$backgroundColor,
     }
