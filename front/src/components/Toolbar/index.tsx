@@ -18,18 +18,35 @@ type PropsToolbar = {
 }
 function Toolbar({ cellDatas, display, previousColor, setPreviousColor }: PropsToolbar) {
 
+	const [toolSelected, setToolSelected] = useState<ToolsSet | null>(ToolsSet.Pen)
+
 	async function postNewColor(newColor: string) {
-		await axios.post(`${import.meta.env.VITE_URL_BACK}/cell/${cellDatas.id}/color`, {
-			newColor: newColor
-		})
+		try {
+			if (toolSelected === ToolsSet.Pen) {
+				await axios.post(`${import.meta.env.VITE_URL_BACK}/cell/${cellDatas.id}`, {
+					newColor: newColor
+				})
+			}
+			else if (toolSelected === ToolsSet.Bomb) {
+				await axios.post(`${import.meta.env.VITE_URL_BACK}/cell/${cellDatas.id}/zone`, {
+					newColor: newColor
+				})
+			}	
+			else if (toolSelected === ToolsSet.Screen) {
+				await axios.post(`${import.meta.env.VITE_URL_BACK}/cell/all`, {
+					newColor: newColor
+				})
+			}
+		}
+		catch (error) {
+			console.log(error)
+		}
 	}
 
 	useEffect(() => {
 		setPreviousColor(null)
 	}, [cellDatas])
 
-	const [toolSelected, setToolSelected] = useState<ToolsSet | null>(null)
-	
 	return (
 		<Style
 			onClick={(event) => event.stopPropagation()}

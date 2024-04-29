@@ -3,7 +3,7 @@ import { CellPopupDisplay, CellType, GridType, ToolbarDisplay } from "../../util
 import Cell from "../Cell"
 import { Style } from "./style"
 import { SocketContext } from "../../contexts/socket"
-import { changeCellColor } from "../../utils/functions"
+import { changeAllCellsColor, changeCellColor, changeZoneCellColor } from "../../utils/functions"
 import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch"
 import DrawingBoard from "../DrawingBoard"
 import Toolbar from "../Toolbar"
@@ -19,9 +19,13 @@ function Grid({ grid, setGrid }: PropsGrid) {
 	const { socket } = useContext(SocketContext)
 
 	useEffect(() => {
-		socket.on("newColor", (cellId: number, newColor: string) =>
+		socket.on("pixelDrawed", (cellId: number, newColor: string) =>
 			changeCellColor(cellId, newColor, setGrid))
- 	}, [])
+		socket.on("bombUsed", (cellId: number, newColor: string) =>
+			changeZoneCellColor(cellId, newColor, setGrid))
+		socket.on("screenUsed", (newColor: string) =>
+			changeAllCellsColor(newColor, setGrid))
+	}, [])
 
 	const [cellPopupDisplay, setCellPopupDisplay] = useState<CellPopupDisplay>({
 		top: 0, left: 0, reverse: false
@@ -55,10 +59,11 @@ function Grid({ grid, setGrid }: PropsGrid) {
 								display={toolbarDisplay}
 								setGrid={setGrid}
 								previousColor={previousColor}
-								setPreviousColor={setPreviousColor} />
+								setPreviousColor={setPreviousColor}
+							/>
 						}
 						{
-							grid.cells.map((cell: CellType, index: number) => 
+							grid.cells.map((cell: CellType, index: number) =>
 								<Cell
 									key={`cell_${index}`}
 									cell={cell}

@@ -18,7 +18,7 @@ export const Style = styled.div`
 	/* height: 640px; */
 	border: solid 16px #2b2b2b;
 	border-radius: 4px;
-	box-shadow: 0px 4px 6px black;
+	box-shadow: 0px 4px 15px black;
 
 	background-color: white;
 `

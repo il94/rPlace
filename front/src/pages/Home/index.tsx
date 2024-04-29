@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { Style, Title } from "./style"
 import { GridType } from "../../utils/types"
 import axios, { AxiosResponse } from "axios"
@@ -8,7 +8,6 @@ function Home() {
 	const [grid, setGrid] = useState<GridType | undefined>()
 
 	useEffect(() => {
-	
 		async function fetchGrid() {
 			try {
 				const gridResponse: AxiosResponse<GridType> = await axios.get(`${import.meta.env.VITE_URL_BACK}/grid`)
@@ -18,7 +17,6 @@ function Home() {
 				console.log(error)
 			}
 		}
-
 		fetchGrid()
 	}, [])
 
@@ -27,7 +25,7 @@ function Home() {
 			<Title>r/Place</Title>
 			{
 				grid &&
-				<Grid grid={grid} setGrid={setGrid} />
+				<Grid grid={grid} setGrid={setGrid as Dispatch<SetStateAction<GridType>>} />
 			}			
 		</Style>
 	)
