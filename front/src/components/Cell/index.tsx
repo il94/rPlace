@@ -1,25 +1,21 @@
 import { Dispatch, MouseEvent, SetStateAction } from "react";
 import { Style } from "./style";
-import { CellPopupType, CellType, ToolbarType } from "../../utils/types";
-import axios from "axios";
-import { randomHexColor } from "../../utils/functions";
+import { CellPopupDisplay, CellType, ToolbarDisplay } from "../../utils/types";
 import { useControls } from "react-zoom-pan-pinch";
+import { ColorsSet } from "../../utils/enums";
 
 type PropsCell = {
 	cell: CellType,
-	displayCellPopup: Dispatch<SetStateAction<CellPopupType>>,
-	displayToolBar: Dispatch<SetStateAction<ToolbarType>>,
+	cellFocused: CellType | null,
+	previousColor: ColorsSet | null,
+	setCellFocused: Dispatch<SetStateAction<CellType | null>>,
+	setCellPopupDisplay: Dispatch<SetStateAction<CellPopupDisplay>>,
+	setToolbarDisplay: Dispatch<SetStateAction<ToolbarDisplay>>
 }
 
-function Cell({ cell, displayCellPopup, displayToolBar }: PropsCell) {
+function Cell({ cell, cellFocused, previousColor, setCellFocused, setCellPopupDisplay, setToolbarDisplay }: PropsCell) {
 
 	const controls = useControls()
-
-	async function setNewColor(newColor: string) {
-		await axios.post(`${import.meta.env.VITE_URL_BACK}/cell/${cell.id}/color`, {
-			newColor: newColor
-		})
-	}
 
 	function focusCell(event: MouseEvent<HTMLDivElement>) {
 
@@ -63,31 +59,26 @@ function Cell({ cell, displayCellPopup, displayToolBar }: PropsCell) {
 		if (resultToolbarY >= 560 - 40)
 			resultToolbarY -= 170
 
-		displayCellPopup({
-			display: true,
-			cellDatas: cell,
+		setCellPopupDisplay({
 			top: resultCellPopupY,
 			left: resultCellPopupX,
 			reverse: reverseCellPopup
 		})
-
-		displayToolBar({
-			display: true,
+		setToolbarDisplay({
 			top: resultToolbarY,
 			left: resultToolbarX,
 		})
 
-		setNewColor(randomHexColor())
+		setCellFocused(cell)
 	}
 	function blurCell() {
-		displayCellPopup({ display: false })
-		displayToolBar({ display: false })
+		setCellFocused(null)
 	}
 
 	return (
 		<>
 			<Style onClick={focusCell} onBlur={blurCell}
-				tabIndex={0} $backgroundColor={cell.color}>
+				tabIndex={0} $backgroundColor={(previousColor && cellFocused?.id === cell.id ) ? previousColor : cell.color}>
 			</Style>
 		</>
 	)

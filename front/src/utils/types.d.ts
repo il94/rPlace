@@ -4,22 +4,20 @@ export type GridType = {
 }
 
 export type CellType = {
-	id:			number,
-	gridid:		number,
-	idOnGrid:	number,
-	color:		string
+	id:				number,
+	gridid:			number,
+	idOnGrid:		number,
+	color:			string,
+	previousColor?:	string
 }
 
-type CellPopupType = {
-	display: boolean,
-	cellDatas?: CellType,
-	top?: number,
-	left?: number,
-	reverse?: boolean
+type CellPopupDisplay = {
+	top: number,
+	left: number,
+	reverse: boolean
 }
 
-type ToolbarType = {
-	display: boolean,
-	top?: number,
-	left?: number
+type ToolbarDisplay = {
+	top: number,
+	left: number
 }

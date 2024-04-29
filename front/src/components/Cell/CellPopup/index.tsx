@@ -1,35 +1,35 @@
 import { useState } from "react";
-import { CellPopupType } from "../../../utils/types";
+import { CellPopupDisplay, CellType } from "../../../utils/types";
 import { History, Style, WrapperBorder } from "./style";
 import CellPopupData from "./CellPopupData";
 
 type PropsCellPopup = {
-	cellPopup: CellPopupType
+	display: CellPopupDisplay,
+	cellDatas: CellType
 }
 
-function CellPopup({ cellPopup }: PropsCellPopup) {
+function CellPopup({ display, cellDatas }: PropsCellPopup) {
 
 	const [open, setOpen] = useState(false)
 
 	return (
-		cellPopup.display && cellPopup.cellDatas &&
 		<Style
 			onClick={(event) => event.stopPropagation()} 
-			$top={cellPopup.top} $left={cellPopup.left} 
-			$reverse={cellPopup.reverse}>
+			$top={display.top} $left={display.left} 
+			$reverse={display.reverse}>
 			<WrapperBorder>
-				<CellPopupData color={cellPopup.cellDatas.color} />
+				<CellPopupData color={cellDatas.color} />
 				<History onClick={() => setOpen(!open)} $open={open}>
 					{
 						open &&
 						<>
-							<CellPopupData color={cellPopup.cellDatas.color} history />
-							<CellPopupData color={cellPopup.cellDatas.color} history />
-							<CellPopupData color={cellPopup.cellDatas.color} history />
-							<CellPopupData color={cellPopup.cellDatas.color} history />
+							<CellPopupData color={cellDatas.color} history />
+							<CellPopupData color={cellDatas.color} history />
+							<CellPopupData color={cellDatas.color} history />
+							<CellPopupData color={cellDatas.color} history />
 						</>
 					}
-					<p>{open ? "Hidden" : "See"} history</p>
+					<p>{ open ? "Hidden" : "See" } history</p>
 				</History>
 			</WrapperBorder>
 		</Style>

@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react"
-import { CellPopupType, CellType, GridType, ToolbarType } from "../../utils/types"
+import { CellPopupDisplay, CellType, GridType, ToolbarDisplay } from "../../utils/types"
 import Cell from "../Cell"
 import { Style } from "./style"
 import { SocketContext } from "../../contexts/socket"
@@ -8,6 +8,7 @@ import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch"
 import DrawingBoard from "../DrawingBoard"
 import Toolbar from "../Toolbar"
 import CellPopup from "../Cell/CellPopup"
+import { ColorsSet } from "../../utils/enums"
 
 type PropsGrid = {
 	grid: GridType,
@@ -22,29 +23,50 @@ function Grid({ grid, setGrid }: PropsGrid) {
 			changeCellColor(cellId, newColor, setGrid))
  	}, [])
 
-	const [cellPopup, displayCellPopup] = useState<CellPopupType>({
-		display: false
+	const [cellPopupDisplay, setCellPopupDisplay] = useState<CellPopupDisplay>({
+		top: 0, left: 0, reverse: false
 	})
-	const [toolbar, displayToolbar] = useState<ToolbarType>({
-		display: false
+	const [toolbarDisplay, setToolbarDisplay] = useState<ToolbarDisplay>({
+		top: 0, left: 0
 	})
 
+	const [cellFocused, setCellFocused] = useState<CellType | null>(null)
+	const [previousColor, setPreviousColor] = useState<ColorsSet | null>(null)
+
+	useEffect(() => {
+		console.log("cell focused", cellFocused)
+	}, [cellFocused])
 
 	return (
 		<Style>
 			<TransformWrapper disablePadding>
 				<TransformComponent>
 					<DrawingBoard>
-						{ cellPopup && <CellPopup cellPopup={cellPopup} /> }
-						{ toolbar.display && <Toolbar toolbar={toolbar} /> }
+						{
+							cellFocused &&
+							<CellPopup
+								cellDatas={cellFocused}
+								display={cellPopupDisplay} />
+						}
+						{
+							cellFocused &&
+							<Toolbar
+								cellDatas={cellFocused}
+								display={toolbarDisplay}
+								setGrid={setGrid}
+								previousColor={previousColor}
+								setPreviousColor={setPreviousColor} />
+						}
 						{
 							grid.cells.map((cell: CellType, index: number) => 
 								<Cell
 									key={`cell_${index}`}
 									cell={cell}
-									setGrid={setGrid}
-									displayCellPopup={displayCellPopup}
-									displayToolBar={displayToolbar}
+									cellFocused={cellFocused}
+									previousColor={previousColor}
+									setCellFocused={setCellFocused}
+									setCellPopupDisplay={setCellPopupDisplay}
+									setToolbarDisplay={setToolbarDisplay}
 								/>
 							)
 						}
