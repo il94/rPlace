@@ -1,12 +1,12 @@
-import { StatePosition } from "../../utils/types";
+import { ToolbarType } from "../../utils/types";
 import { Style } from "./style";
 
 type PropsToolbar = {
-	toolbar: StatePosition
+	toolbar: ToolbarType
 }
 function Toolbar({ toolbar }: PropsToolbar) {
 	return (
-		<Style $top={toolbar.top} $left={toolbar.left} $bottom={toolbar.bottom} $right={toolbar.right}/>
+		<Style $top={toolbar.top} $left={toolbar.left} />
 	)
 }
 

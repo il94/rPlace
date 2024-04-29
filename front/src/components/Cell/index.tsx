@@ -1,17 +1,17 @@
-import { Dispatch, MouseEvent, SetStateAction, useState } from "react";
+import { Dispatch, MouseEvent, SetStateAction } from "react";
 import { Style } from "./style";
-import { CellType, StatePosition } from "../../utils/types";
+import { CellPopupType, CellType, ToolbarType } from "../../utils/types";
 import axios from "axios";
 import { randomHexColor } from "../../utils/functions";
-import CellPopup from "./CellPopup";
 import { useControls } from "react-zoom-pan-pinch";
 
 type PropsCell = {
 	cell: CellType,
-	displayToolBar: Dispatch<SetStateAction<StatePosition>>
+	displayCellPopup: Dispatch<SetStateAction<CellPopupType>>,
+	displayToolBar: Dispatch<SetStateAction<ToolbarType>>,
 }
 
-function Cell({ cell, displayToolBar }: PropsCell) {
+function Cell({ cell, displayCellPopup, displayToolBar }: PropsCell) {
 
 	const controls = useControls()
 
@@ -21,85 +21,73 @@ function Cell({ cell, displayToolBar }: PropsCell) {
 		})
 	}
 
-
-	const [cellPopup, displayCellPopup] = useState(false)
-
 	function focusCell(event: MouseEvent<HTMLDivElement>) {
-		event.target.focus()
 
-		// console.log("CONTEXT previousscale", context.transformState)
-		// console.log("CONTEXT startCoord", context.startCoords)
+		const target = event.target as HTMLElement		
+		const gridDatas = target.parentElement!.parentElement!.parentElement!.getBoundingClientRect()
 
-		const grid = event.target.parentElement.parentElement.parentElement.getBoundingClientRect()
-		const child = event.target.parentElement.getBoundingClientRect()
-		const cell = event.target.getBoundingClientRect()
-		
-		// console.log(controls.instance.bounds?.minPositionY)
-		// console.log(cell.bottom)
-		// console.log(controls.instance)
-		// console.log(controls.instance)
-		// console.log(controls.instance.startCoords.y)
-		// console.log(controls.instance.transformState.previousScale)
+		target.focus()
 
-		const previousScale = 1.75
-		const startCoordX = controls.instance.startCoords.x - grid.left
-		const startCoordY = controls.instance.startCoords.y - grid.top
+		/* =========== X AXE =========== */
 
-		// console.log("previousscale", previousScale)
-		// console.log("startCoord", startCoordY)
-		// console.log(startCoordY / previousScale)
-		// console.log(event.clientY)
+		const clickX = controls.instance.startCoords!.x - gridDatas.left
 
-		let resultY =  (startCoordY ) / controls.instance.transformState.scale + 40
-		let resultX =  (startCoordX ) / controls.instance.transformState.scale - (300 / 2)
-		// const result =   controls.instance.startCoords?.y - 200
+		let resultCellPopupX = clickX / controls.instance.transformState.scale - 150 / 2
+		let resultToolbarX = clickX / controls.instance.transformState.scale - (300 / 2)
 
-		// console.log("ResultY", resultY)
-		// console.log("ResultX", resultX)
+		if (resultCellPopupX >= 560 - 150)
+			resultCellPopupX = 560 - 155
+		else if (resultCellPopupX < 0)
+			resultCellPopupX = 5
+	
+		if (resultToolbarX >= 560 - 300)
+			resultToolbarX = 560 - 305
+		else if (resultToolbarX < 0)
+			resultToolbarX = 5
 
-		if (resultY >= 560 - 40)
-		// {
-			resultY -= 170
-		// 	console.log("DEPASSE")
-		// }
+		/* =========== Y AXE =========== */
 
-		if (resultX >= 560 - 300)
-		// {
-				resultX = 560 - 305
-		// 	console.log("DEPASSEXXXX")
-		// }
-		else if (resultX < 0)
-			resultX = 5
-			
+		const clickY = controls.instance.startCoords!.y - gridDatas.top
 
-		// console.log("GRID", grid, event.target.parentElement.parentElement.parentElement)
-		// console.log("CHILD", child, event.target.parentElement)
-		// console.log("CELL", cell, event.target)
-		// console.log("test", result + 50)
-		// console.log("test2", controls.instance.startCoords.y - controls.instance.transformState.positionY)
-		// console.log(560 * controls.instance.transformState.previousScale)
-		// console.log("====================================")
+		let resultCellPopupY = clickY / controls.instance.transformState.scale - 16
+		let reverseCellPopup = false
+		let resultToolbarY = clickY / controls.instance.transformState.scale + 40
 
+		if (resultCellPopupY < 70)
+		{
+			resultCellPopupY += 32.5
+			resultToolbarY += 50
+
+			reverseCellPopup = true
+		}
+		if (resultToolbarY >= 560 - 40)
+			resultToolbarY -= 170
+
+		displayCellPopup({
+			display: true,
+			cellDatas: cell,
+			top: resultCellPopupY,
+			left: resultCellPopupX,
+			reverse: reverseCellPopup
+		})
 
 		displayToolBar({
 			display: true,
-			top: resultY,
-			left: resultX,
+			top: resultToolbarY,
+			left: resultToolbarX,
 		})
 
-		displayCellPopup(true)
 		setNewColor(randomHexColor())
 	}
 	function blurCell() {
-		displayCellPopup(false)
-		displayToolBar(false)
+		displayCellPopup({ display: false })
+		displayToolBar({ display: false })
 	}
 
 	return (
 		<>
 			<Style onClick={focusCell} onBlur={blurCell}
 				tabIndex={0} $backgroundColor={cell.color}>
-			{ cellPopup && <CellPopup cell={cell} /> }
 			</Style>
 		</>
 	)
