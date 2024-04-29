@@ -34,3 +34,9 @@ export enum ColorsSet {
 	White = "#ffffff",
 	Transparent = "none"
 }
+
+export enum ToolsSet {
+	Pen,
+	Bomb,
+	Screen
+}

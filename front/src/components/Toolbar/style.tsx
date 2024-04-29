@@ -1,7 +1,6 @@
 import styled from "styled-components";
 
 export const Style = styled.div<{ $left?: number, $top?: number }>`
-
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -19,25 +18,22 @@ export const Style = styled.div<{ $left?: number, $top?: number }>`
 
 	border-radius: 15px;
 
-	border-radius: 15px;
-
 	box-shadow: 2.5px 2.5px 0.5px rgba(0, 0, 0, 0.5);
 
 	background-color: #f9dcbf;
 `
 
 export const Interfaces = styled.div`
-	
 	display: flex;
-	
+	justify-content: space-between;
+	align-items: center;
+
 
 	width: calc(100% - 20px);
 	height: calc(100% - 10px);
-
 `
 
 export const Colors = styled.div`
-	
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: center;
@@ -46,5 +42,24 @@ export const Colors = styled.div`
 	
 	width: 30%;
 	height: 100%;
+`
 
+export const Tools = styled.div`
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	
+	width: 30%;
+	height: 100%;
+`
+
+export const DrawButton = styled.button`
+	width: 50px;
+	height: 50px;
+
+	border-radius: 15px;
+
+	box-shadow: 2.5px 2.5px 0.5px rgba(0, 0, 0, 0.5);
+
+	background-color: #39db39;
 `

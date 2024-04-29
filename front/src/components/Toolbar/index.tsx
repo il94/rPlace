@@ -1,9 +1,13 @@
 import axios from "axios";
-import { ColorsSet } from "../../utils/enums";
+import { ColorsSet, ToolsSet } from "../../utils/enums";
 import { CellType, GridType, ToolbarDisplay } from "../../utils/types";
 import ToolbarColor from "./ToolbarColor";
-import { Colors, Interfaces, Style } from "./style";
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { Colors, DrawButton, Interfaces, Style, Tools } from "./style";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import PenIcon from "../../../src/assets/pen.svg"
+import BombIcon from "../../../src/assets/bomb.svg"
+import ScreenIcon from "../../../src/assets/screen.svg"
+import Tool from "./Tool";
 
 type PropsToolbar = {
 	cellDatas: CellType,
@@ -24,6 +28,8 @@ function Toolbar({ cellDatas, display, previousColor, setPreviousColor }: PropsT
 		setPreviousColor(null)
 	}, [cellDatas])
 
+	const [toolSelected, setToolSelected] = useState<ToolsSet | null>(null)
+	
 	return (
 		<Style
 			onClick={(event) => event.stopPropagation()}
@@ -39,11 +45,16 @@ function Toolbar({ cellDatas, display, previousColor, setPreviousColor }: PropsT
 						/>)
 				}
 				</Colors>
+				<Tools>
+					<Tool tool={ToolsSet.Pen} icon={PenIcon} price={0} toolSelected={toolSelected} setToolSelected={setToolSelected} />
+					<Tool tool={ToolsSet.Bomb} icon={BombIcon} price={10} toolSelected={toolSelected} setToolSelected={setToolSelected} />
+					<Tool tool={ToolsSet.Screen} icon={ScreenIcon} price={10000} toolSelected={toolSelected} setToolSelected={setToolSelected} />
+				</Tools>
 				{
-					previousColor &&
-					<button onClick={() => postNewColor(previousColor)}>
+					// previousColor &&
+					<DrawButton onClick={() => postNewColor(previousColor)}>
 						Valider
-					</button>
+					</DrawButton>
 				}
 			</Interfaces>
 		</Style>
