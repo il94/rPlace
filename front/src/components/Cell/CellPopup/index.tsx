@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CellPopupDisplay, CellType } from "../../../utils/types";
 import { History, Style, WrapperBorder } from "./style";
 import CellPopupData from "./CellPopupData";
+import axios, { AxiosResponse } from "axios";
 
 type PropsCellPopup = {
 	display: CellPopupDisplay,
@@ -11,6 +12,16 @@ type PropsCellPopup = {
 function CellPopup({ display, cellDatas }: PropsCellPopup) {
 
 	const [open, setOpen] = useState(false)
+	const [history, setHistory] = useState<[]>([])
+
+	useEffect(() => {
+		async function fetchHistory() {
+			const historyResponse: AxiosResponse<[]> = await axios.get(`${import.meta.env.VITE_URL_BACK}/cell/${cellDatas.id}/history`)
+
+			setHistory(historyResponse.data)
+		}
+		fetchHistory()
+	}, [cellDatas])
 
 	return (
 		<Style
@@ -23,10 +34,11 @@ function CellPopup({ display, cellDatas }: PropsCellPopup) {
 					{
 						open &&
 						<>
-							<CellPopupData color={cellDatas.color} history />
-							<CellPopupData color={cellDatas.color} history />
-							<CellPopupData color={cellDatas.color} history />
-							<CellPopupData color={cellDatas.color} history />
+						{
+							history.map((entry, index) => 
+								<CellPopupData key={`cellpopupdata_${index}`} color={entry} history />
+							)
+						}
 						</>
 					}
 					<p>{ open ? "Hidden" : "See" } history</p>

@@ -9,7 +9,7 @@ function CellPopupData({ color, history }: PropsCellPopupData) {
 	return (
 		<Style $history={history}>
 			<Username $history={history}>
-				okooooooooooooooo
+				user
 			</Username>
 			<ColorValue $backgroundColor={color} $history={history} />
 		</Style>

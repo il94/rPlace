@@ -333,7 +333,7 @@ const background = {
 		  "mode": "delete",
 		  "value": 0
 		},
-		"value": 100
+		"value": 200
 	  },
 	  "opacity": {
 		"value": {
@@ -371,7 +371,10 @@ const background = {
 		"type": "edge"
 	  },
 	  "size": {
-		"value": 16,
+		"value": {
+			"min": 12,
+			"max": 16
+		},
 		"animation": {
 		  "count": 0,
 		  "enable": true,

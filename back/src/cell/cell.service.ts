@@ -12,7 +12,9 @@ export class CellService {
 	async setNewColorAll(newColor: string) {
 		await this.prisma.cell.updateMany({
 			data: {
-				color: newColor
+				color: {
+					push: newColor
+				}
 			}
 		})
 
@@ -25,7 +27,9 @@ export class CellService {
 				id: cellId
 			},
 			data: {
-				color: newColor
+				color: {
+					push: newColor
+				}
 			}
 		})
 
@@ -43,11 +47,27 @@ export class CellService {
 				}
 			},
 			data: {
-				color: newColor
+				color: {
+					push: newColor
+				}
 			}
 		})
 
 		this.GridGateway.server.emit("bombUsed", cellId, newColor)
+	}
+
+	async getHistory(cellId: number) {
+		const history = await this.prisma.cell.findFirst({
+			where: {
+				id: cellId
+			},
+			select: {
+				color: true
+			}
+		})
+
+		const colors = history.color.splice(history.color.length - 5, 4)
+		return (colors)
 	}
 
 	async drawCircle(start: number, size: number): Promise<number[]> {

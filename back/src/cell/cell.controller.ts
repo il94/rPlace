@@ -1,4 +1,4 @@
-import { Body, Controller, Param, ParseIntPipe, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Post } from '@nestjs/common';
 import { CellService } from './cell.service';
 
 @Controller('cell')
@@ -21,4 +21,10 @@ export class CellController {
 	@Body('newColor') newColor: string) {
 		await this.CellService.setNewColorZone(cellId, newColor)
 	}
+
+	@Get(':id/history')
+	async getHistory(@Param('id', ParseIntPipe) cellId: number) {
+		return await this.CellService.getHistory(cellId)
+	}
+
 }

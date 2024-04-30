@@ -18,7 +18,7 @@ export class GridService implements OnApplicationBootstrap {
 						data: {
 							gridId: grid.id,
 							idOnGrid: i,
-							color: "white"
+							color: ["white"]
 						}
 					})
 				}
