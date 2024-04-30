@@ -33,6 +33,17 @@ model History {
   	cell		Cell		@relation(fields: [cellId], references: [id])
 	cellId		Int
 
+	username	String
 	color		String
 	createdAt	DateTime	@default(now())
+}
+
+model User {
+    id				Int			@id @default(autoincrement())
+	username		String		@unique
+	hash			String
+	refreshToken	String
+
+	points			Int
+	lastPut			DateTime	@default(now())
 }

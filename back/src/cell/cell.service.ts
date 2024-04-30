@@ -38,7 +38,8 @@ export class CellService {
 			await this.prisma.history.create({
 				data: {
 					cellId: i,
-					color: newColor
+					color: newColor,
+					username: "temp"
 				}
 			})
 			await this.deleteLatestEntry(i)
@@ -51,7 +52,8 @@ export class CellService {
 		await this.prisma.history.create({
 			data: {
 				cellId: cellId,
-				color: newColor
+				color: newColor,
+				username: "temp"
 			}
 		})
 		await this.deleteLatestEntry(cellId)
@@ -67,7 +69,8 @@ export class CellService {
 			await this.prisma.history.create({
 				data: {
 					cellId: id,
-					color: newColor
+					color: newColor,
+					username: "temp"
 				}	
 			})
 			await this.deleteLatestEntry(id)

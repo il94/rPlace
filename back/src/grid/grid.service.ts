@@ -20,7 +20,8 @@ export class GridService implements OnApplicationBootstrap {
 							idOnGrid: i,
 							history: {
 								create: [{
-									color: "#ffffff"
+									color: "#ffffff",
+									username: "r/Place"
 								}]
 							}
 						}
