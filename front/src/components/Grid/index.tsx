@@ -37,10 +37,6 @@ function Grid({ grid, setGrid }: PropsGrid) {
 	const [cellFocused, setCellFocused] = useState<CellType | null>(null)
 	const [previousColor, setPreviousColor] = useState<ColorsSet | null>(null)
 
-	useEffect(() => {
-		console.log("cell focused", cellFocused)
-	}, [cellFocused])
-
 	return (
 		<Style>
 			<TransformWrapper disablePadding>

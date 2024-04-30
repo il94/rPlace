@@ -9,29 +9,52 @@ export class CellService {
 		private GridGateway: GridGateway
 	) {}
 
-	async setNewColorAll(newColor: string) {
-		await this.prisma.cell.updateMany({
-			data: {
-				color: {
-					push: newColor
-				}
+	async deleteLatestEntry(cellId: number) {
+		const count = await this.prisma.history.count({
+			where: {
+				cellId: cellId
 			}
 		})
+		if (count > 5)
+		{
+			const latest = await this.prisma.history.findFirst({
+				where: {
+					cellId: cellId
+				},
+				orderBy: {
+					createdAt: 'asc'
+				}
+			})
+			await this.prisma.history.delete({
+				where: {
+					id: latest.id
+				}
+			})
+		}
+	}
+
+	async setNewColorAll(newColor: string) {
+		for (let i = 1; i <= 1600; i++) {
+			await this.prisma.history.create({
+				data: {
+					cellId: i,
+					color: newColor
+				}
+			})
+			await this.deleteLatestEntry(i)
+		}
 
 		this.GridGateway.server.emit("screenUsed", newColor)
 	}
 
 	async setNewColor(cellId: number, newColor: string) {
-		await this.prisma.cell.update({
-			where: {
-				id: cellId
-			},
+		await this.prisma.history.create({
 			data: {
-				color: {
-					push: newColor
-				}
+				cellId: cellId,
+				color: newColor
 			}
 		})
+		await this.deleteLatestEntry(cellId)
 
 		this.GridGateway.server.emit("pixelDrawed", cellId, newColor)
 	}
@@ -40,34 +63,35 @@ export class CellService {
 
 		const results: number[] = await this.drawCircle(cellId, 11)
 
-		await this.prisma.cell.updateMany({
-			where: {
-				id: {
-					in: results
-				}
-			},
-			data: {
-				color: {
-					push: newColor
-				}
-			}
-		})
+		for (const id of results) {
+			await this.prisma.history.create({
+				data: {
+					cellId: id,
+					color: newColor
+				}	
+			})
+			await this.deleteLatestEntry(id)
+		}
 
 		this.GridGateway.server.emit("bombUsed", cellId, newColor)
 	}
 
 	async getHistory(cellId: number) {
-		const history = await this.prisma.cell.findFirst({
+		const history = await this.prisma.history.findMany({
 			where: {
-				id: cellId
+				cellId: cellId
 			},
 			select: {
 				color: true
+			},
+			take: 5,
+			orderBy: {
+				createdAt: 'desc'
 			}
 		})
 
-		const colors = history.color.splice(history.color.length - 5, 4)
-		return (colors)
+		history.reverse().pop()
+		return (history)
 	}
 
 	async drawCircle(start: number, size: number): Promise<number[]> {

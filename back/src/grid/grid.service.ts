@@ -18,7 +18,11 @@ export class GridService implements OnApplicationBootstrap {
 						data: {
 							gridId: grid.id,
 							idOnGrid: i,
-							color: ["white"]
+							history: {
+								create: [{
+									color: "#ffffff"
+								}]
+							}
 						}
 					})
 				}
@@ -48,12 +52,26 @@ export class GridService implements OnApplicationBootstrap {
 				},
 				orderBy: {
 					idOnGrid: 'asc'
+				},
+				select: {
+					id: true,
+					history: {
+						orderBy: {
+							createdAt: 'desc'
+						},
+						take: 1
+					}
 				}
 			})
 
 			const grid = {
 				id: gridId,
-				cells: cellsGrid
+				cells: cellsGrid.map((cell) => {
+					return {
+						id: cell.id,
+						color: cell.history[0].color
+					}
+				})
 			}
 
 			return (grid)

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { CellPopupDisplay, CellType } from "../../../utils/types";
+import { CellPopupDisplay, CellType, HistoryCell } from "../../../utils/types";
 import { History, Style, WrapperBorder } from "./style";
 import CellPopupData from "./CellPopupData";
 import axios, { AxiosResponse } from "axios";
@@ -12,7 +12,7 @@ type PropsCellPopup = {
 function CellPopup({ display, cellDatas }: PropsCellPopup) {
 
 	const [open, setOpen] = useState(false)
-	const [history, setHistory] = useState<[]>([])
+	const [history, setHistory] = useState<HistoryCell[]>([])
 
 	useEffect(() => {
 		async function fetchHistory() {
@@ -36,7 +36,7 @@ function CellPopup({ display, cellDatas }: PropsCellPopup) {
 						<>
 						{
 							history.map((entry, index) => 
-								<CellPopupData key={`cellpopupdata_${index}`} color={entry} history />
+								<CellPopupData key={`cellpopupdata_${index}`} color={entry.color} history />
 							)
 						}
 						</>

@@ -4,20 +4,24 @@ export type GridType = {
 }
 
 export type CellType = {
-	id:				number,
-	gridid:			number,
-	idOnGrid:		number,
-	color:			string,
-	previousColor?:	string
+	id:			number,
+	gridid:		number,
+	idOnGrid:	number,
+	color:		string
+}
+
+export type HistoryCell = {
+	id:		number,
+	color:	string
 }
 
 type CellPopupDisplay = {
-	top: number,
-	left: number,
-	reverse: boolean
+	top:		number,
+	left:		number,
+	reverse:	boolean
 }
 
 type ToolbarDisplay = {
-	top: number,
-	left: number
+	top:	number,
+	left:	number
 }

@@ -78,7 +78,7 @@ function Cell({ cell, cellFocused, previousColor, setCellFocused, setCellPopupDi
 	return (
 		<>
 			<Style onClick={focusCell} onBlur={blurCell}
-				tabIndex={0} $backgroundColor={(previousColor && cellFocused?.id === cell.id ) ? previousColor : cell.color[cell.color.length -1]}>
+				tabIndex={0} $backgroundColor={(previousColor && cellFocused?.id === cell.id ) ? previousColor : cell.color}>
 			</Style>
 		</>
 	)

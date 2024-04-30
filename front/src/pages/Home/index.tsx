@@ -10,7 +10,8 @@ function Home() {
 	useEffect(() => {
 		async function fetchGrid() {
 			try {
-				const gridResponse: AxiosResponse<GridType> = await axios.get(`${import.meta.env.VITE_URL_BACK}/grid`)
+				const gridResponse: AxiosResponse = await axios.get(`${import.meta.env.VITE_URL_BACK}/grid`)
+
 				setGrid(gridResponse.data)
 			}
 			catch (error) {

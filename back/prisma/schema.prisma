@@ -24,5 +24,15 @@ model Cell {
     gridId		Int
 
 	idOnGrid	Int
-	color		String[]
+
+	history		History[]
+}
+
+model History {
+	id			Int			@id @default(autoincrement())
+  	cell		Cell		@relation(fields: [cellId], references: [id])
+	cellId		Int
+
+	color		String
+	createdAt	DateTime	@default(now())
 }
