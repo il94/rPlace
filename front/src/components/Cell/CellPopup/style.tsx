@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import colors from "../../../utils/colors";
 
 export const Style = styled.div<{ $left?: number, $top?: number, $reverse?: boolean  }>`
 	display: flex;
@@ -19,10 +20,10 @@ export const Style = styled.div<{ $left?: number, $top?: number, $reverse?: bool
 
 	box-shadow: 2.5px 2.5px 0.5px rgba(0, 0, 0, 0.5);
 
-	background-color: #f9dcbf;
+	background-color: ${colors.popup.default};
 
 	&:hover {
-		background-color: #f6c491;
+		background-color: ${colors.popup.hover};
 	}
 
 	&::before {
@@ -42,7 +43,7 @@ export const Style = styled.div<{ $left?: number, $top?: number, $reverse?: bool
 		content: "";
 		overflow: hidden;
 
-		background-color: ${({ $reverse }) => $reverse ? "#fcd4ad" : "inherit"};
+		background-color: ${({ $reverse }) => $reverse ? colors.popup.banner : "inherit"};
 	}
 `
 

@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import colors from "../../utils/colors";
 
 export const Style = styled.div`
 	display: flex;
@@ -16,7 +17,7 @@ export const Style = styled.div`
 
 	aspect-ratio: 1;
 	/* height: 640px; */
-	border: solid 16px #2b2b2b;
+	border: solid 16px ${colors.borders.grid};
 	border-radius: 4px;
 	box-shadow: 0px 4px 15px black;
 

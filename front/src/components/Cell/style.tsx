@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import colors from "../../utils/colors";
 
 export const Style = styled.div.attrs<{ $backgroundColor: string }>((props) => ({
     style: {
@@ -7,7 +8,7 @@ export const Style = styled.div.attrs<{ $backgroundColor: string }>((props) => (
 }))`
 
 	position: relative;
-	z-index: ${({ $backgroundColor }) => $backgroundColor === "#ffffff" ? 0 : 1 };
+	z-index: ${({ $backgroundColor }) => $backgroundColor === colors.palette.White ? 0 : 1 };
 
     width: 2.5%;
     height: 2.5%;
@@ -28,7 +29,7 @@ export const Style = styled.div.attrs<{ $backgroundColor: string }>((props) => (
 
 	&:hover,
 	&:focus {
-		transform: ${({ $backgroundColor }) => $backgroundColor !== "#ffffff" && "scale(1.5)" };
+		transform: ${({ $backgroundColor }) => $backgroundColor !== colors.palette.White && "scale(1.5)" };
 	}
 
 `

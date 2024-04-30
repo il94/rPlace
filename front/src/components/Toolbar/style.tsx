@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import colors from "../../utils/colors";
 
 export const Style = styled.div<{ $left?: number, $top?: number }>`
 	display: flex;
@@ -20,7 +21,7 @@ export const Style = styled.div<{ $left?: number, $top?: number }>`
 
 	box-shadow: 2.5px 2.5px 0.5px rgba(0, 0, 0, 0.5);
 
-	background-color: #f9dcbf;
+	background-color: ${colors.popup.default};
 `
 
 export const Interfaces = styled.div`

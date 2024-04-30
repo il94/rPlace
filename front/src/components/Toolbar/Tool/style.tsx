@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import colors from "../../../utils/colors";
 
 export const Style = styled.div`
 	margin-left: 8px;
@@ -24,9 +25,7 @@ export const Button = styled.button<{ $selected: boolean }>`
 
 	box-shadow: 2.5px 2.5px 0.5px rgba(0, 0, 0, 0.5);
 
-	background-color: ${({ $selected }) => $selected ? "red" : "#d09f6f"};
-	// background-color: #d09f6f;
-	/* background-color: #f9dcbf; */
+	background-color: ${({ $selected }) => $selected ? colors.button.selected : colors.button.default};
 
 	transition: transform 0.1s linear;
 

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ColorsSet, ToolsSet } from "../../utils/enums";
+import { ToolsSet } from "../../utils/enums";
 import { CellType, GridType, ToolbarDisplay } from "../../utils/types";
 import ToolbarColor from "./ToolbarColor";
 import { Colors, DrawButton, Interfaces, Style, Tools } from "./style";
@@ -8,6 +8,7 @@ import PenIcon from "../../../src/assets/pen.svg"
 import BombIcon from "../../../src/assets/bomb.svg"
 import ScreenIcon from "../../../src/assets/screen.svg"
 import Tool from "./Tool";
+import colors from "../../utils/colors";
 
 type PropsToolbar = {
 	cellDatas: CellType,
@@ -54,11 +55,11 @@ function Toolbar({ cellDatas, display, previousColor, setPreviousColor }: PropsT
 			<Interfaces>
 				<Colors>
 				{
-					ColorsSet.map((color, index) =>
+					Object.entries(colors.palette).map((color, index) => 
 						<ToolbarColor
 							key={`toolbarcolor_${index}`}
 							setPreviousColor={setPreviousColor}
-							color={color}
+							color={color[1]}
 						/>)
 				}
 				</Colors>

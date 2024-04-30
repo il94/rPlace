@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import colors from "../../../../utils/colors";
 
 export const Style = styled.div<{ $history?: boolean }>`
 	display: flex;
@@ -8,7 +9,7 @@ export const Style = styled.div<{ $history?: boolean }>`
 	width: 100%;
 	height: ${({ $history }) => $history ? 10 : 20}px;
 
-	background-color: ${({ $history }) => !$history && "#fcd4ad"};
+	background-color: ${({ $history }) => !$history && colors.popup.banner };
 `
 
 export const Username = styled.p<{ $history?: boolean }>`
@@ -29,7 +30,7 @@ export const ColorValue = styled.div<{ $backgroundColor: string, $history?: bool
 	margin-left: ${({ $history }) => $history ? 5 : 4}px;
 	margin-right: ${({ $history }) => $history ? 9.75 : 8}px;
 
-	border: solid 1.5px #000000;
+	border: solid 1.5px ${colors.borders.cell};
 	border-radius: 2.5px;
 
 	background-color: ${({ $backgroundColor }) => $backgroundColor};
