@@ -1,3 +1,4 @@
+import { ISourceOptions } from "@tsparticles/engine"
 import { randomHexColor } from "./functions"
 
 const colorsTest = []
@@ -6,7 +7,7 @@ for (let i = 0; i < 100; i++) {
 	colorsTest.push(randomHexColor())
 }
 
-const background = {
+const background: ISourceOptions = {
 	"autoPlay": true,
 	"background": {
 	  "color": {

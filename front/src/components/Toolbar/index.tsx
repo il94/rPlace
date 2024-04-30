@@ -13,8 +13,8 @@ type PropsToolbar = {
 	cellDatas: CellType,
 	display: ToolbarDisplay,
 	setGrid: Dispatch<SetStateAction<GridType>>,
-	previousColor: ColorsSet | null,
-	setPreviousColor: Dispatch<SetStateAction<ColorsSet | null>>
+	previousColor: string | null,
+	setPreviousColor: Dispatch<SetStateAction<string | null>>
 }
 function Toolbar({ cellDatas, display, previousColor, setPreviousColor }: PropsToolbar) {
 
@@ -54,11 +54,11 @@ function Toolbar({ cellDatas, display, previousColor, setPreviousColor }: PropsT
 			<Interfaces>
 				<Colors>
 				{
-					Object.keys(ColorsSet).map((key: string) =>
+					ColorsSet.map((color, index) =>
 						<ToolbarColor
-							key={`toolbarcolor_${key}`}
+							key={`toolbarcolor_${index}`}
 							setPreviousColor={setPreviousColor}
-							color={ColorsSet[key]}
+							color={color}
 						/>)
 				}
 				</Colors>
@@ -68,7 +68,7 @@ function Toolbar({ cellDatas, display, previousColor, setPreviousColor }: PropsT
 					<Tool tool={ToolsSet.Screen} icon={ScreenIcon} price={10000} toolSelected={toolSelected} setToolSelected={setToolSelected} />
 				</Tools>
 				{
-					// previousColor &&
+					previousColor &&
 					<DrawButton onClick={() => postNewColor(previousColor)}>
 						Valider
 					</DrawButton>

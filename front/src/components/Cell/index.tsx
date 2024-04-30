@@ -2,12 +2,11 @@ import { Dispatch, MouseEvent, SetStateAction } from "react";
 import { Style } from "./style";
 import { CellPopupDisplay, CellType, ToolbarDisplay } from "../../utils/types";
 import { useControls } from "react-zoom-pan-pinch";
-import { ColorsSet } from "../../utils/enums";
 
 type PropsCell = {
 	cell: CellType,
 	cellFocused: CellType | null,
-	previousColor: ColorsSet | null,
+	previousColor: string | null,
 	setCellFocused: Dispatch<SetStateAction<CellType | null>>,
 	setCellPopupDisplay: Dispatch<SetStateAction<CellPopupDisplay>>,
 	setToolbarDisplay: Dispatch<SetStateAction<ToolbarDisplay>>

@@ -8,7 +8,6 @@ import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch"
 import DrawingBoard from "../DrawingBoard"
 import Toolbar from "../Toolbar"
 import CellPopup from "../Cell/CellPopup"
-import { ColorsSet } from "../../utils/enums"
 
 type PropsGrid = {
 	grid: GridType,
@@ -35,7 +34,7 @@ function Grid({ grid, setGrid }: PropsGrid) {
 	})
 
 	const [cellFocused, setCellFocused] = useState<CellType | null>(null)
-	const [previousColor, setPreviousColor] = useState<ColorsSet | null>(null)
+	const [previousColor, setPreviousColor] = useState<string | null>(null)
 
 	return (
 		<Style>
