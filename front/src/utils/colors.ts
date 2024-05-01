@@ -4,7 +4,8 @@ const colors = {
 	window: "#272727",
 	button: {
 		default: "#d09f6f",
-		selected: "red",
+		selected: "#d79553",
+		blocked: "#9a8671",
 		form: {
 			default: "#d8ae84",
 			hover: "#e5a361"

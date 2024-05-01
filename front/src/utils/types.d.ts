@@ -24,3 +24,8 @@ type ToolbarDisplay = {
 	top:	number,
 	left:	number
 }
+
+type User = {
+	points: number,
+	lastPut: Date | null
+}

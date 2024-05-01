@@ -4,16 +4,18 @@ import { Button, Price, Style } from "./style"
 
 type PropsTool = {
 	tool: ToolsSet,
+	setToolSelected: Dispatch<SetStateAction<ToolsSet | null>>,
 	icon: string,
 	price: number,
-	toolSelected: ToolsSet | null,
-	setToolSelected: Dispatch<SetStateAction<ToolsSet | null>>
+	available: boolean,
+	selected: boolean
 }
 
-function Tool({ tool, icon, price, toolSelected, setToolSelected }: PropsTool) {
+function Tool({ tool, setToolSelected, icon, price, available, selected }: PropsTool) {
 	return (
 		<Style>
-			<Button onClick={() => setToolSelected(tool)} $selected={toolSelected === tool}>
+			<Button onClick={() => available && setToolSelected(tool)}
+				$available={available} $selected={selected}>
 				<img src={icon} />
 			</Button>
 			<Price>

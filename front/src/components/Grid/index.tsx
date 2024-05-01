@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react"
-import { CellPopupDisplay, CellType, GridType, ToolbarDisplay } from "../../utils/types"
+import { CellPopupDisplay, CellType, GridType, ToolbarDisplay, User } from "../../utils/types"
 import Cell from "../Cell"
 import { Recto, Style } from "./style"
 import { SocketContext } from "../../contexts/socket"
@@ -35,7 +35,7 @@ function Grid({ grid, setGrid }: PropsGrid) {
 	})
 
 	const [cellFocused, setCellFocused] = useState<CellType | null>(null)
-	const [previousColor, setPreviousColor] = useState<string | null>(null)
+	const [newColor, setNewColor] = useState<string | null>(null)
 
 	const [flip, setFlip] = useState(false)
 	const [display, setDisplay] = useState(false)
@@ -47,6 +47,10 @@ function Grid({ grid, setGrid }: PropsGrid) {
 			setDisplay(!display)
 		}, 505)
 	}
+
+	const [userDatas, setUserDatas] = useState<User>({
+		points: 0, lastPut: null
+	})
 
 	return (
 		<>
@@ -66,10 +70,12 @@ function Grid({ grid, setGrid }: PropsGrid) {
 									cellFocused &&
 									<Toolbar
 										cellDatas={cellFocused}
+										userDatas={userDatas}
+										setUserDatas={setUserDatas}
 										display={toolbarDisplay}
 										setGrid={setGrid}
-										previousColor={previousColor}
-										setPreviousColor={setPreviousColor}
+										newColor={newColor}
+										setNewColor={setNewColor}
 										setCellFocused={setCellFocused as Dispatch<SetStateAction<null>>}
 									/>
 								}
@@ -79,7 +85,7 @@ function Grid({ grid, setGrid }: PropsGrid) {
 											key={`cell_${index}`}
 											cell={cell}
 											cellFocused={cellFocused}
-											previousColor={previousColor}
+											newColor={newColor}
 											setCellFocused={setCellFocused}
 											setCellPopupDisplay={setCellPopupDisplay}
 											setToolbarDisplay={setToolbarDisplay}

@@ -1,59 +1,29 @@
-import axios from "axios";
 import { ToolsSet } from "../../utils/enums";
-import { CellType, GridType, ToolbarDisplay } from "../../utils/types";
+import { CellType, GridType, ToolbarDisplay, User } from "../../utils/types";
 import ToolbarColor from "./ToolbarColor";
-import { Colors, DrawButton, Interfaces, Style, Tools } from "./style";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Colors, Interfaces, Style, Tools, Wallet } from "./style";
+import { Dispatch, SetStateAction, useState } from "react";
 import PenIcon from "../../../src/assets/pen.svg"
 import BombIcon from "../../../src/assets/bomb.svg"
 import ScreenIcon from "../../../src/assets/screen.svg"
 import Tool from "./Tool";
 import colors from "../../utils/colors";
+import CoinIcon from "../../assets/coin.png"
+import DrawButton from "./DrawButton";
 
 type PropsToolbar = {
 	cellDatas: CellType,
+	userDatas: User,
+	setUserDatas: Dispatch<SetStateAction<User>>,
 	display: ToolbarDisplay,
 	setGrid: Dispatch<SetStateAction<GridType>>,
-	previousColor: string | null,
-	setPreviousColor: Dispatch<SetStateAction<string | null>>,
+	newColor: string | null,
+	setNewColor: Dispatch<SetStateAction<string | null>>,
 	setCellFocused: Dispatch<SetStateAction<null>>
 }
-function Toolbar({ cellDatas, display, previousColor, setPreviousColor, setCellFocused }: PropsToolbar) {
+function Toolbar({ cellDatas, userDatas, setUserDatas, display, newColor, setNewColor, setCellFocused }: PropsToolbar) {
 
 	const [toolSelected, setToolSelected] = useState<ToolsSet | null>(ToolsSet.Pen)
-
-	async function postNewColor(newColor: string) {
-		try {
-			if (toolSelected === ToolsSet.Pen) {
-				await axios.post(`${import.meta.env.VITE_URL_BACK}/cell/${cellDatas.id}`, {
-					newColor: newColor
-				},
-				{
-					withCredentials: true
-				})
-			}
-			else if (toolSelected === ToolsSet.Bomb) {
-				await axios.post(`${import.meta.env.VITE_URL_BACK}/cell/${cellDatas.id}/zone`, {
-					newColor: newColor
-				},
-				{
-					withCredentials: true
-				})
-			}	
-			else if (toolSelected === ToolsSet.Screen) {
-				await axios.post(`${import.meta.env.VITE_URL_BACK}/cell/all`, {
-					newColor: newColor
-				},
-				{
-					withCredentials: true
-				})
-			}
-			setCellFocused(null)
-		}
-		catch (error) {
-			console.log(error)
-		}
-	}
 
 	return (
 		<Style
@@ -65,22 +35,29 @@ function Toolbar({ cellDatas, display, previousColor, setPreviousColor, setCellF
 					Object.entries(colors.palette).map((color, index) => 
 						<ToolbarColor
 							key={`toolbarcolor_${index}`}
-							previousColor={previousColor}
-							setPreviousColor={setPreviousColor}
+							newColor={newColor}
+							setNewColor={setNewColor}
 							color={color[1]}
 						/>)
 				}
 				</Colors>
 				<Tools>
-					<Tool tool={ToolsSet.Pen} icon={PenIcon} price={0} toolSelected={toolSelected} setToolSelected={setToolSelected} />
-					<Tool tool={ToolsSet.Bomb} icon={BombIcon} price={10} toolSelected={toolSelected} setToolSelected={setToolSelected} />
-					<Tool tool={ToolsSet.Screen} icon={ScreenIcon} price={10000} toolSelected={toolSelected} setToolSelected={setToolSelected} />
+					<Tool tool={ToolsSet.Pen} setToolSelected={setToolSelected} icon={PenIcon} price={0}
+						selected={toolSelected === ToolsSet.Pen} available={userDatas.points >= 0} />
+					<Tool tool={ToolsSet.Bomb} setToolSelected={setToolSelected} icon={BombIcon} price={15}
+						selected={toolSelected === ToolsSet.Bomb} available={userDatas.points >= 15} />
+					<Tool tool={ToolsSet.Screen} setToolSelected={setToolSelected} icon={ScreenIcon} price={9999}
+						selected={toolSelected === ToolsSet.Screen} available={userDatas.points >= 9999} />
 				</Tools>
+				<Wallet>
+					<p>
+						{userDatas.points}
+					</p>
+					<img src={CoinIcon} />
+				</Wallet>
 				{
-					previousColor &&
-					<DrawButton onClick={() => postNewColor(previousColor)}>
-						Valider
-					</DrawButton>
+					<DrawButton cellId={cellDatas.id} toolSelected={toolSelected}
+						newColor={newColor} setUserDatas={setUserDatas} setCellFocused={setCellFocused} />
 				}
 			</Interfaces>
 		</Style>

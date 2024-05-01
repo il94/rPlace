@@ -6,13 +6,13 @@ import { useControls } from "react-zoom-pan-pinch";
 type PropsCell = {
 	cell: CellType,
 	cellFocused: CellType | null,
-	previousColor: string | null,
+	newColor: string | null,
 	setCellFocused: Dispatch<SetStateAction<CellType | null>>,
 	setCellPopupDisplay: Dispatch<SetStateAction<CellPopupDisplay>>,
 	setToolbarDisplay: Dispatch<SetStateAction<ToolbarDisplay>>
 }
 
-function Cell({ cell, cellFocused, previousColor, setCellFocused, setCellPopupDisplay, setToolbarDisplay }: PropsCell) {
+function Cell({ cell, cellFocused, newColor, setCellFocused, setCellPopupDisplay, setToolbarDisplay }: PropsCell) {
 
 	const controls = useControls()
 
@@ -77,7 +77,7 @@ function Cell({ cell, cellFocused, previousColor, setCellFocused, setCellPopupDi
 	return (
 		<>
 			<Style onClick={focusCell} onBlur={blurCell} $focused={cellFocused?.id === cell.id}
-				tabIndex={0} $backgroundColor={(previousColor && cellFocused?.id === cell.id ) ? previousColor : cell.color}>
+				tabIndex={0} $backgroundColor={(newColor && cellFocused?.id === cell.id ) ? newColor : cell.color}>
 			</Style>
 		</>
 	)

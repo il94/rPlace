@@ -5,14 +5,11 @@ export const Style = styled.div<{ $left?: number, $top?: number }>`
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	/* flex-wrap: wrap; */
 
 	position: absolute;
 	left: ${({ $left }) => $left}px;
 	top: ${({ $top }) => $top}px;
 	z-index: 999;
-
-	/* margin: 5px; */
 
 	width: 300px;
 	height: 70px;
@@ -26,9 +23,7 @@ export const Style = styled.div<{ $left?: number, $top?: number }>`
 
 export const Interfaces = styled.div`
 	display: flex;
-	justify-content: space-between;
 	align-items: center;
-
 
 	width: calc(100% - 20px);
 	height: calc(100% - 10px);
@@ -40,27 +35,28 @@ export const Colors = styled.div`
 	justify-content: center;
 	align-items: center;
 
-	
-	width: 30%;
+	width: 84px;
 	height: 100%;
 `
 
 export const Tools = styled.div`
 	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
+	flex-wrap: wrap;
 	
-	width: 30%;
+	width: 72px;
 	height: 100%;
 `
 
-export const DrawButton = styled.button`
-	width: 50px;
-	height: 50px;
+export const Wallet = styled.div`
+	display: flex;
+	justify-content: center;
+	align-items: center;
 
-	border-radius: 15px;
+	width: 74px;
+	height: 100%;
 
-	box-shadow: 2.5px 2.5px 0.5px rgba(0, 0, 0, 0.5);
-
-	background-color: #39db39;
+	& > img {
+		width: 18px;
+		height: 18px;
+	}
 `
