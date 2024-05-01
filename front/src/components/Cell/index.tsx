@@ -55,7 +55,7 @@ function Cell({ cell, cellFocused, previousColor, setCellFocused, setCellPopupDi
 
 			reverseCellPopup = true
 		}
-		if (resultToolbarY >= 560 - 40)
+		if (resultToolbarY >= 560 - 70)
 			resultToolbarY -= 170
 
 		setCellPopupDisplay({

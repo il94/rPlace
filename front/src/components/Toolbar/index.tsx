@@ -15,9 +15,10 @@ type PropsToolbar = {
 	display: ToolbarDisplay,
 	setGrid: Dispatch<SetStateAction<GridType>>,
 	previousColor: string | null,
-	setPreviousColor: Dispatch<SetStateAction<string | null>>
+	setPreviousColor: Dispatch<SetStateAction<string | null>>,
+	setCellFocused: Dispatch<SetStateAction<null>>
 }
-function Toolbar({ cellDatas, display, previousColor, setPreviousColor }: PropsToolbar) {
+function Toolbar({ cellDatas, display, previousColor, setPreviousColor, setCellFocused }: PropsToolbar) {
 
 	const [toolSelected, setToolSelected] = useState<ToolsSet | null>(ToolsSet.Pen)
 
@@ -26,27 +27,33 @@ function Toolbar({ cellDatas, display, previousColor, setPreviousColor }: PropsT
 			if (toolSelected === ToolsSet.Pen) {
 				await axios.post(`${import.meta.env.VITE_URL_BACK}/cell/${cellDatas.id}`, {
 					newColor: newColor
+				},
+				{
+					withCredentials: true
 				})
 			}
 			else if (toolSelected === ToolsSet.Bomb) {
 				await axios.post(`${import.meta.env.VITE_URL_BACK}/cell/${cellDatas.id}/zone`, {
 					newColor: newColor
+				},
+				{
+					withCredentials: true
 				})
 			}	
 			else if (toolSelected === ToolsSet.Screen) {
 				await axios.post(`${import.meta.env.VITE_URL_BACK}/cell/all`, {
 					newColor: newColor
+				},
+				{
+					withCredentials: true
 				})
 			}
+			setCellFocused(null)
 		}
 		catch (error) {
 			console.log(error)
 		}
 	}
-
-	useEffect(() => {
-		setPreviousColor(null)
-	}, [cellDatas])
 
 	return (
 		<Style

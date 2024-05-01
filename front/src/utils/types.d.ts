@@ -6,13 +6,13 @@ export type GridType = {
 export type CellType = {
 	id:			number,
 	gridid:		number,
-	idOnGrid:	number,
-	color:		string
+	color:		string,
+	username:	string
 }
 
 export type HistoryCell = {
-	id:		number,
-	color:	string
+	color:		string,
+	username:	string
 }
 
 type CellPopupDisplay = {

@@ -25,9 +25,9 @@ type PropsLogout = {
 function GridHome({ flipGrid, setPageToDisplay }: PropsLogout) {
 
 	async function logout() {
-		await axios.delete(`${import.meta.env.VITE_URL_BACK}/auth/logout`, {
-			withCredentials: true
-		})
+		// await axios.delete(`${import.meta.env.VITE_URL_BACK}/auth/logout`, {
+		// 	withCredentials: true
+		// })
 
 		setPageToDisplay(Pages.SIGNIN)
 	}

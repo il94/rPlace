@@ -12,11 +12,13 @@ type PropsCellPopup = {
 function CellPopup({ display, cellDatas }: PropsCellPopup) {
 
 	const [open, setOpen] = useState(false)
-	const [history, setHistory] = useState<HistoryCell[]>([])
+	const [history, setHistory] = useState<HistoryCell[] | null>(null)
 
 	useEffect(() => {
 		async function fetchHistory() {
-			const historyResponse: AxiosResponse<[]> = await axios.get(`${import.meta.env.VITE_URL_BACK}/cell/${cellDatas.id}/history`)
+			const historyResponse: AxiosResponse<HistoryCell[]> = await axios.get(`${import.meta.env.VITE_URL_BACK}/cell/${cellDatas.id}/history`, {
+				withCredentials: true
+			})
 
 			setHistory(historyResponse.data)
 		}
@@ -28,22 +30,35 @@ function CellPopup({ display, cellDatas }: PropsCellPopup) {
 			onClick={(event) => event.stopPropagation()} 
 			$top={display.top} $left={display.left} 
 			$reverse={display.reverse}>
-			<WrapperBorder>
-				<CellPopupData color={cellDatas.color} />
-				<History onClick={() => setOpen(!open)} $open={open}>
-					{
-						open &&
-						<>
+			{
+				history &&
+				<WrapperBorder>
+					<CellPopupData username={history[history.length - 1].username} color={cellDatas.color} />
+					<History onClick={() => setOpen(!open)} $open={open}>
 						{
-							history.map((entry, index) => 
-								<CellPopupData key={`cellpopupdata_${index}`} color={entry.color} history />
-							)
+							open &&
+							<>
+							{
+								history.map((entry, index, array) => {
+									if (index == array.length - 1)
+										return
+									else
+										return (
+											<CellPopupData
+												key={`cellpopupdata_${index}`}
+												username={entry.username}
+												color={entry.color}
+												history
+											/>
+										)
+								})
+							}
+							</>
 						}
-						</>
-					}
-					<p>{ open ? "Hidden" : "See" } history</p>
-				</History>
-			</WrapperBorder>
+						<p>{ open ? "Hidden" : "See" } history</p>
+					</History>
+				</WrapperBorder>
+			}
 		</Style>
 	)
 }

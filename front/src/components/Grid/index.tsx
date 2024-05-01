@@ -70,6 +70,7 @@ function Grid({ grid, setGrid }: PropsGrid) {
 										setGrid={setGrid}
 										previousColor={previousColor}
 										setPreviousColor={setPreviousColor}
+										setCellFocused={setCellFocused as Dispatch<SetStateAction<null>>}
 									/>
 								}
 								{
