@@ -1,17 +1,28 @@
-import { IsString, MaxLength, MinLength } from "class-validator";
+import { IsNotEmpty, IsString, MaxLength, MinLength } from "class-validator";
 import { ContainsLowercase, ContainsNumber, ContainsSpecialCharacter, ContainsUppercase } from "./auth.decorators";
 
-export class SignupDto {
-	@MinLength(1)
-	@MaxLength(13)
+export class SigninDto {
 	@IsString()
+	@IsNotEmpty()
 	username: string;
 
 	@IsString()
-	@MinLength(8)
+	@IsNotEmpty()
+	password: string;
+}
+
+export class SignupDto {
+	@MaxLength(13)
+	@IsString()
+	@IsNotEmpty()
+	username: string;
+
+	@ContainsSpecialCharacter()
+	@ContainsNumber()
 	@ContainsUppercase()
 	@ContainsLowercase()
-	@ContainsNumber()
-	@ContainsSpecialCharacter()
+	@MinLength(8)
+	@IsString()
+	@IsNotEmpty()
 	password: string;
 }

@@ -18,9 +18,15 @@ export const Title = styled.h1`
 	left: 50%;
 	transform: translateX(-50%);
 
-	font-size: 48px;
+	margin-top: 15px;
+
+	font-size: 52px;
 	
 	text-align: center;
 
 	color: white;
+
+	&:hover {
+		cursor: pointer;
+	}
 `

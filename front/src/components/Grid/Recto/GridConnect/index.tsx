@@ -60,9 +60,9 @@ function GridConnect() {
 				const axiosError = error as AxiosError<ErrorResponse>
 				const { statusCode, message } = axiosError.response?.data!
 				if (statusCode === 400)
-					setPasswordError(message)
+					setPasswordError(message[0])
 				if (statusCode === 409)
-					setUsernameError(message)	
+					setUsernameError(message[0])	
 			}
 		}
 	}
@@ -79,19 +79,25 @@ function GridConnect() {
 				<Inputs>
 					<LabelInput>
 						<Label>Username</Label>
-						<Input onChange={(event) => setUsername(event.target.value)} value={username} />
+						<Input value={username}
+							onChange={(event) => setUsername(event.target.value)}
+							onFocus={() => setUsernameError('')} />
 						<ErrorMessage>{ usernameError }</ErrorMessage>
 						</LabelInput>
 					<LabelInput>
 						<Label>Password</Label>
-						<Input type="password" onChange={(event) => setPassword(event.target.value)} value={password} />
+						<Input type="password"value={password}
+							onChange={(event) => setPassword(event.target.value)} 
+							onFocus={() => {setPasswordError(''); setRetypePasswordError('')}} />
 						<ErrorMessage>{ passwordError }</ErrorMessage>
 					</LabelInput>
 					{
 						pageToDisplay === Pages.SIGNUP &&
 						<LabelInput>
 							<Label>Re-type password</Label>
-							<Input type="password" onChange={(event) => setRetypePassword(event.target.value)} value={retypePassword} />
+							<Input type="password" value={retypePassword}
+								onChange={(event) => setRetypePassword(event.target.value)}
+								onFocus={() => {setPasswordError(''); setRetypePasswordError('')}} />
 							<ErrorMessage>{ retypePasswordError }</ErrorMessage>
 						</LabelInput>
 					}

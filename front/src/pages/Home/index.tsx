@@ -7,7 +7,7 @@ import { GridContext } from "../../contexts/GridContext"
 
 function Home() {
 
-	const { grid, setGrid } = useContext(GridContext)
+	const { grid, setGrid, flipGrid } = useContext(GridContext)
 
 	useEffect(() => {
 		async function fetchGrid() {
@@ -25,7 +25,7 @@ function Home() {
 
 	return (
 		<Style>
-			<Title>r/Place</Title>
+			<Title onClick={flipGrid}>r/Place</Title>
 			{
 				grid ?
 				<Grid />
