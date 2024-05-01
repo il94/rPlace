@@ -6,18 +6,24 @@ import { PrismaService } from './prisma/prisma.service';
 import { CellService } from './cell/cell.service';
 import { CellModule } from './cell/cell.module';
 import { AuthModule } from './auth/auth.module';
+import { UserRepository } from './user/user.repository';
+import { UserModule } from './user/user.module';
+import { CellRepository } from './cell/cell.repository';
 
 @Module({
 	imports: [
 		GridModule,
 		CellModule,
-		AuthModule
+		AuthModule,
+		UserModule
 	],
 	controllers: [ AppController ],
 	providers: [
 		AppService,
 		PrismaService,
-		CellService
+		CellService,
+		UserRepository,
+		CellRepository
 	],
 })
 

@@ -1,103 +1,59 @@
 import { Injectable } from '@nestjs/common';
 import { GridGateway } from 'src/grid/grid.gateway';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { CellRepository } from './cell.repository';
+import { UserRepository } from 'src/user/user.repository';
 
 @Injectable()
 export class CellService {
 	constructor(
-		private prisma: PrismaService,
-		private GridGateway: GridGateway
+		private gateway: GridGateway,
+		private repository: CellRepository,
+		private userRepository: UserRepository
 	) {}
 
-	async deleteLatestEntry(cellId: number) {
-		const count = await this.prisma.history.count({
-			where: {
-				cellId: cellId
-			}
-		})
-		if (count > 5)
-		{
-			const latest = await this.prisma.history.findFirst({
-				where: {
-					cellId: cellId
-				},
-				orderBy: {
-					createdAt: 'asc'
-				}
-			})
-			await this.prisma.history.delete({
-				where: {
-					id: latest.id
-				}
-			})
-		}
-	}
-
-	async setNewColorAll(newColor: string) {
+	async setNewColorAll(userId: number, newColor: string) {
 		for (let i = 1; i <= 1600; i++) {
-			await this.prisma.history.create({
-				data: {
-					cellId: i,
-					color: newColor,
-					username: "temp"
-				}
-			})
-			await this.deleteLatestEntry(i)
+			await this.drawPixel(userId, i, newColor)
 		}
 
-		this.GridGateway.server.emit("screenUsed", newColor)
+		this.gateway.server.emit("screenUsed", newColor)
 	}
 
-	async setNewColor(cellId: number, newColor: string) {
-		await this.prisma.history.create({
-			data: {
-				cellId: cellId,
-				color: newColor,
-				username: "temp"
-			}
-		})
-		await this.deleteLatestEntry(cellId)
+	async setNewColor(userId: number, cellId: number, newColor: string) {
+		await this.drawPixel(userId, cellId, newColor)
 
-		this.GridGateway.server.emit("pixelDrawed", cellId, newColor)
+		this.gateway.server.emit("pixelDrawed", cellId, newColor)
 	}
 
-	async setNewColorZone(cellId: number, newColor: string) {
-
-		const results: number[] = await this.drawCircle(cellId, 11)
+	async setNewColorZone(userId: number, cellId: number, newColor: string) {
+		const results: number[] = await this.determineCircle(cellId, 11)
 
 		for (const id of results) {
-			await this.prisma.history.create({
-				data: {
-					cellId: id,
-					color: newColor,
-					username: "temp"
-				}	
-			})
-			await this.deleteLatestEntry(id)
+			await this.drawPixel(userId, id, newColor)
 		}
 
-		this.GridGateway.server.emit("bombUsed", cellId, newColor)
+		this.gateway.server.emit("bombUsed", cellId, newColor)
 	}
-
+	
 	async getHistory(cellId: number) {
-		const history = await this.prisma.history.findMany({
-			where: {
-				cellId: cellId
-			},
-			select: {
-				color: true
-			},
-			take: 5,
-			orderBy: {
-				createdAt: 'desc'
-			}
-		})
+		const history = await this.repository.getCellHistory(cellId)
 
-		history.reverse().pop()
+		history.reverse()
 		return (history)
 	}
 
-	async drawCircle(start: number, size: number): Promise<number[]> {
+	/* ==================== UTILS ================== */
+
+	async drawPixel(userId: number, cellId: number, newColor: string) {
+		const username = await this.userRepository.getUsername(userId)
+	
+		await this.repository.createCellHistoryEntry(username, cellId, newColor)
+		const count = await this.repository.getCellHistoryCount(cellId)
+		if (count > 5)
+			await this.repository.deleteCellHistoryLatestEntry(cellId)
+	}
+
+	async determineCircle(start: number, size: number): Promise<number[]> {
 		function getIndexLine(position: number) {
 			return (Math.floor(position / 40))
 		}
