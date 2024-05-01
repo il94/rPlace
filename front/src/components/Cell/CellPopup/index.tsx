@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
-import { CellPopupDisplay, HistoryCell } from "../../../utils/types";
+import { useContext, useEffect, useState } from "react";
+import { CellPopupDisplay, ErrorResponse, HistoryCell } from "../../../utils/types";
 import { History, Style, WrapperBorder } from "./style";
 import CellPopupData from "./CellPopupData";
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
+import { GridContext } from "../../../contexts/GridContext";
 
 type PropsCellPopup = {
 	display: CellPopupDisplay,
@@ -11,8 +12,7 @@ type PropsCellPopup = {
 
 function CellPopup({ display, cellId }: PropsCellPopup) {
 
-	const [open, setOpen] = useState(false)
-	const [history, setHistory] = useState<HistoryCell[] | null>(null)
+	const { flipGrid } = useContext(GridContext)
 
 	useEffect(() => {
 		async function fetchHistory() {
@@ -24,11 +24,19 @@ function CellPopup({ display, cellId }: PropsCellPopup) {
 				setHistory(historyResponse.data)
 			}
 			catch (error) {
-
+				if (axios.isAxiosError(error)) {
+					const axiosError = error as AxiosError<ErrorResponse>
+					const { statusCode } = axiosError.response?.data!
+					if (statusCode === 401)
+						flipGrid()
+				}
 			}
 		}
 		fetchHistory()
 	}, [cellId])
+
+	const [open, setOpen] = useState(false)
+	const [history, setHistory] = useState<HistoryCell[] | null>(null)
 
 	return (
 		<Style

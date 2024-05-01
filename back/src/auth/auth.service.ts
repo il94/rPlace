@@ -1,10 +1,9 @@
-import { BadRequestException, ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
 import { AuthRepository } from './auth.repository';
 import * as argon2 from 'argon2';
 import { Prisma } from '@prisma/client';
-import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class AuthService {

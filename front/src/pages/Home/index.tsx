@@ -1,12 +1,13 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react"
+import { useContext, useEffect } from "react"
 import { Style, Title } from "./style"
-import { GridType } from "../../utils/types"
 import axios, { AxiosResponse } from "axios"
 import Grid from "../../components/Grid"
 import Loader from "../../components/Loader"
+import { GridContext } from "../../contexts/GridContext"
 
 function Home() {
-	const [grid, setGrid] = useState<GridType | undefined>()
+
+	const { grid, setGrid } = useContext(GridContext)
 
 	useEffect(() => {
 		async function fetchGrid() {
@@ -27,7 +28,7 @@ function Home() {
 			<Title>r/Place</Title>
 			{
 				grid ?
-				<Grid grid={grid} setGrid={setGrid as Dispatch<SetStateAction<GridType>>} />
+				<Grid />
 				:
 				<Loader />
 			}			

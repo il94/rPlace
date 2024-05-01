@@ -13,50 +13,73 @@ export class CellService {
 	) {}
 
 	async setNewColorAll(userId: number, newColor: string) {
-		if (await this.verifyConditions(userId, 10000))
-		{
-			await this.userRepository.removePoints(userId, 10000)
-			
-			for (let i = 1; i <= 1600; i++) {
-				await this.drawPixel(userId, i, newColor)
-			}
-			await this.userRepository.setLastInputDate(userId)
-			
-			this.gateway.server.emit("screenUsed", newColor)
+		try {
+			if (await this.verifyConditions(userId, 10000))
+				{
+					await this.userRepository.removePoints(userId, 10000)
+					
+					for (let i = 1; i <= 1600; i++) {
+						await this.drawPixel(userId, i, newColor)
+					}
+					await this.userRepository.setLastInputDate(userId)
+					
+					this.gateway.server.emit("screenUsed", newColor)
+				}
+		}
+		catch (error) {
+			if (error instanceof Prisma.PrismaClientKnownRequestError)
+				throw new ForbiddenException("The provided credentials are not allowed")
+			else
+				throw error
 		}
 	}
 
 	async setNewColor(userId: number, cellId: number, newColor: string) {
-		if (await this.verifyConditions(userId, 0))
-		{
-			await this.drawPixel(userId, cellId, newColor)
-			await this.userRepository.setLastInputDate(userId)
-			await this.userRepository.addPoint(userId)
-			
-			this.gateway.server.emit("pixelDrawed", cellId, newColor)
+		try {
+			if (await this.verifyConditions(userId, 0))
+				{
+					await this.drawPixel(userId, cellId, newColor)
+					await this.userRepository.setLastInputDate(userId)
+					await this.userRepository.addPoint(userId)
+					
+					this.gateway.server.emit("pixelDrawed", cellId, newColor)
+				}
+			}
+			catch (error) {
+				if (error instanceof Prisma.PrismaClientKnownRequestError)
+					throw new ForbiddenException("The provided credentials are not allowed")
+				else
+					throw error
+			}
 		}
-	}
 
 	async setNewColorZone(userId: number, cellId: number, newColor: string) {
-		if (await this.verifyConditions(userId, 15))
-		{
-			await this.userRepository.removePoints(userId, 15)
-			
-			const results: number[] = await this.determineCircle(cellId, 11)
-			
-			for (const id of results) {
-				await this.drawPixel(userId, id, newColor)
+		try {
+			if (await this.verifyConditions(userId, 15))
+			{
+				await this.userRepository.removePoints(userId, 15)
+				
+				const results: number[] = this.determineCircle(cellId, 11)
+				
+				for (const id of results) {
+					await this.drawPixel(userId, id, newColor)
+				}
+				
+				await this.userRepository.setLastInputDate(userId)
+				
+				this.gateway.server.emit("bombUsed", cellId, newColor)
 			}
-			
-			await this.userRepository.setLastInputDate(userId)
-			
-			this.gateway.server.emit("bombUsed", cellId, newColor)
+		}
+		catch (error) {
+			if (error instanceof Prisma.PrismaClientKnownRequestError)
+				throw new ForbiddenException("The provided credentials are not allowed")
+			else
+				throw error
 		}
 	}
 	
 	async getHistory(cellId: number) {
 		try {
-
 			const history = await this.repository.getCellHistory(cellId)
 			
 			history.reverse()
@@ -81,7 +104,7 @@ export class CellService {
 			await this.repository.deleteCellHistoryLatestEntry(cellId)
 	}
 
-	async determineCircle(start: number, size: number): Promise<number[]> {
+	determineCircle(start: number, size: number): number[] {
 		function getIndexLine(position: number) {
 			return (Math.floor(position / 40))
 		}
@@ -120,19 +143,19 @@ export class CellService {
 	async verifyConditions(userId: number, price: number): Promise<boolean> {
 		const userDatas: Partial<User> = await this.userRepository.getLastPutAndWallet(userId)
 
-		if (await this.verifyCooldown(userDatas.lastPut) && await this.verifyWallet(userDatas.points, price))
+		if (this.verifyCooldown(userDatas.lastPut) && this.verifyWallet(userDatas.points, price))
 			return true
 		return false
 	}
 	
-	async verifyCooldown(lastPut: Date): Promise<boolean> {
+	verifyCooldown(lastPut: Date): boolean {
 		const currentDate = new Date()
 		const difference = Math.abs(lastPut.getTime() / 1000 - currentDate.getTime() / 1000);
 		
 		return (difference >= 5)
 	}
 	
-	async verifyWallet(wallet: number, price: number): Promise<boolean> {
+	verifyWallet(wallet: number, price: number): boolean {
 		return (wallet >= price)
 	}
 }

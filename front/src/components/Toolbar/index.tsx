@@ -16,7 +16,6 @@ type PropsToolbar = {
 	userDatas: User,
 	setUserDatas: Dispatch<SetStateAction<User>>,
 	display: ToolbarDisplay,
-	setGrid: Dispatch<SetStateAction<GridType>>,
 	newColor: string | null,
 	setNewColor: Dispatch<SetStateAction<string | null>>,
 	setCellFocused: Dispatch<SetStateAction<null>>

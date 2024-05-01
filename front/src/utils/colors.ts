@@ -22,7 +22,8 @@ const colors = {
 	},
 	text: {
 		default: "#000000",
-		alt: "#ffffff"
+		alt: "#ffffff",
+		error: "#ff3434"
 	},
 	palette: {
 		RedDark: "#6d011b",

@@ -21,8 +21,7 @@ export class AuthController {
 
 	@Get()
 	@UseGuards(AuthGuard)
-	async verifyToken() {
-	}
+	async verifyToken() {}
 
 	@Delete('logout')
 	@UseGuards(AuthGuard)

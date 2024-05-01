@@ -12,7 +12,7 @@ export const Style = styled.div`
 
 	position: relative;
 
-	background-color: #272727;
+	background-color: ${colors.window};
 `
 
 export const Form = styled.form`
@@ -59,25 +59,13 @@ export const Label = styled.label`
 
 export const Input = styled.input`
 	
-	/* width: ${(props) => props.width ? props.width + "px" : "100%" }; */
-
 	border: none;
-	/* border-bottom: 1px solid ${(props) => props.$disable ? colors.textBlocked : props.$error && colors.textError}; */
 	border-bottom: 1px solid ${colors.text.alt};
 
-	/* cursor: ${(props) => props.$disable && "default"}; */
-
 	font-size: 28px;
-	/* font-size: ${(props) => props.fontSize ? props.fontSize : props.width && props.width / 12}px; */
 	text-align: center;
 
-	/* color : ${(props) => props.$disable && colors.textBlocked}; */
 	color : ${colors.text.alt};
-	/* background-color: inherit; */
-
-	/* &::placeholder {
-		font-size: ${(props) => props.fontSize && props.fontSize - 2}px;
-	} */
 
 	&:focus {
 		outline: none;
@@ -88,7 +76,7 @@ export const Input = styled.input`
 export const ErrorMessage = styled.p`
 	font-size: 16px;
 	font-weight: lighter;
-	color: #ff3434;
+	color: ${colors.text.error};
 `
 
 export const RedirectMessage = styled.p`

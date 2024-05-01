@@ -3,8 +3,9 @@ import { GridTilte, Button } from "../style";
 import styled from "styled-components";
 import colors from "../../../../utils/colors";
 import { ActiveText } from "../GridConnect/style";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useContext } from "react";
 import { Pages } from "../../../../utils/enums";
+import { GridContext } from "../../../../contexts/GridContext";
 
 const CentralDiv = styled.div`
 	display: flex;
@@ -17,13 +18,10 @@ const CentralDiv = styled.div`
 	color: ${colors.text.alt};
 `
 
-type PropsLogout = {
-	flipGrid: () => void,
-	setPageToDisplay: Dispatch<SetStateAction<Pages>>
-}
+function GridHome() {
 
-function GridHome({ flipGrid, setPageToDisplay }: PropsLogout) {
-
+	const { flipGrid, setPageToDisplay } = useContext(GridContext)
+	
 	async function logout() {
 		await axios.delete(`${import.meta.env.VITE_URL_BACK}/auth/logout`, {
 			withCredentials: true

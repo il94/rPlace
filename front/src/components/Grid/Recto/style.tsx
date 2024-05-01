@@ -15,7 +15,6 @@ export const Style = styled.div<{ $flip: boolean, $display: boolean }>`
 	backface-visibility: hidden;
 
 	background-color: ${colors.window};
-
 `
 
 export const GridTilte = styled.p`

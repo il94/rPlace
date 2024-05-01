@@ -1,8 +1,9 @@
-import axios from "axios";
-import { ToolsSet } from "../../../utils/enums";
+import axios, { AxiosError } from "axios";
+import { Pages, ToolsSet } from "../../../utils/enums";
 import { Style } from "./style";
-import { User } from "../../../utils/types";
-import { Dispatch, SetStateAction } from "react";
+import { ErrorResponse, User } from "../../../utils/types";
+import { Dispatch, SetStateAction, useContext } from "react";
+import { GridContext } from "../../../contexts/GridContext";
 
 type PropsDrawButton = {
 	cellId: number,
@@ -13,6 +14,8 @@ type PropsDrawButton = {
 }
 
 function DrawButton({ cellId, toolSelected, newColor, setUserDatas, setCellFocused }: PropsDrawButton) {
+
+	const { flipGrid } = useContext(GridContext)
 
 	async function postNewColor(newColor: string) {
 		try {
@@ -55,7 +58,12 @@ function DrawButton({ cellId, toolSelected, newColor, setUserDatas, setCellFocus
 			setCellFocused(null)
 		}
 		catch (error) {
-			console.log(error)
+			if (axios.isAxiosError(error)) {
+				const axiosError = error as AxiosError<ErrorResponse>
+				const { statusCode } = axiosError.response?.data!
+				if (statusCode === 401)
+					flipGrid()
+			}
 		}
 	}
 

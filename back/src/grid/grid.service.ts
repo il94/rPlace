@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException, OnApplicationBootstrap } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from 'src/config/prisma.service';
 
 @Injectable()
 export class GridService implements OnApplicationBootstrap {

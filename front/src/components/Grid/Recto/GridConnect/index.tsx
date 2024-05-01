@@ -1,15 +1,14 @@
-import { Dispatch, FormEvent, SetStateAction, useState } from "react";
+import { Dispatch, FormEvent, SetStateAction, useContext, useState } from "react";
 import { Form, Input, Label, LabelInput, Inputs, RedirectMessage, ErrorMessage, ActiveText } from "./style";
 import axios, { AxiosError } from "axios";
 import { Pages } from "../../../../utils/enums";
 import { GridTilte, Button } from "../style";
 import { ErrorResponse } from "../../../../utils/types";
+import { GridContext } from "../../../../contexts/GridContext";
 
-type PropsGridConnect = {
-	pageToDisplay: Pages,
-	setPageToDisplay: Dispatch<SetStateAction<Pages>>
-}
-function GridConnect({ pageToDisplay, setPageToDisplay }: PropsGridConnect) {
+function GridConnect() {
+
+	const { pageToDisplay, setPageToDisplay, switchPage } = useContext(GridContext)
 
 	const [username, setUsername] = useState('')
 	const [usernameError, setUsernameError] = useState('')
@@ -71,13 +70,6 @@ function GridConnect({ pageToDisplay, setPageToDisplay }: PropsGridConnect) {
 	async function submitDatas(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault()
 		pageToDisplay === Pages.SIGNIN ? signin() : signup()
-	}
-
-	function switchPage() {
-		if (pageToDisplay === Pages.SIGNIN)
-			setPageToDisplay(Pages.SIGNUP)
-		else
-			setPageToDisplay(Pages.SIGNIN)
 	}
 
 	return (

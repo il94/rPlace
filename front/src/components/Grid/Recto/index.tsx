@@ -1,25 +1,21 @@
-import { useState } from "react";
+import { useContext } from "react";
 import { Style } from "./style";
 import GridConnect from "./GridConnect";
 import { Pages } from "../../../utils/enums";
 import GridHome from "./GridHome";
+import { GridContext } from "../../../contexts/GridContext";
 
-type PropsRecto = {
-	flip: boolean,
-	display: boolean,
-	flipGrid: () => void
-}
-function Recto({ flip, display, flipGrid }: PropsRecto) {
+function Recto() {
 
-	const [pageToDisplay, setPageToDisplay] = useState<Pages>(Pages.SIGNIN)
+	const { flip, display, pageToDisplay } = useContext(GridContext)
 
 	return (
 		<Style $flip={flip} $display={display}>
 			{
 				pageToDisplay === Pages.SIGNIN || pageToDisplay === Pages.SIGNUP ?
-				<GridConnect pageToDisplay={pageToDisplay} setPageToDisplay={setPageToDisplay}/>
+					<GridConnect />
 				: pageToDisplay === Pages.HOME ?
-				<GridHome flipGrid={flipGrid} setPageToDisplay={setPageToDisplay} />
+					<GridHome />
 				:
 				null
 			}

@@ -18,9 +18,6 @@ export class CellController {
 	async setNewColor(@UserId() userId: number,
 	@Param('id', ParseIntPipe) cellId: number,
 	@Body('newColor') newColor: string) {
-
-		console.log("HERE")
-
 		await this.CellService.setNewColor(userId, cellId, newColor)
 	}
 
