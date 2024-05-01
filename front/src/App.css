@@ -25,7 +25,11 @@ body {
 p,
 h1,
 h2,
-button {
+button,
+form,
+label,
+input,
+span {
 	font-family: "Pixelify Sans", sans-serif;
 }
 button {
@@ -34,5 +38,11 @@ button {
 	cursor: pointer;
 	outline: none;
 
+	background: none;
+}
+
+input {
+	border: none;
+	outline: none;
 	background: none;
 }

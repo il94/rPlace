@@ -1,22 +1,28 @@
 const colors = {
 
 	background: "#1e1e1e",
-
+	window: "#272727",
 	button: {
 		default: "#d09f6f",
-		selected: "red"
+		selected: "red",
+		form: {
+			default: "#d8ae84",
+			hover: "#e5a361"
+		},
 	},
 	popup: {
 		default: "#f9dcbf",
 		hover: "#f6c491",
 		banner: "#fcd4ad"
 	},
-
 	borders: {
 		cell: "#000000",
 		grid: "#2b2b2b"
 	},
-
+	text: {
+		default: "#000000",
+		alt: "#ffffff"
+	},
 	palette: {
 		RedDark: "#6d011b",
 		Red: "#bd0038",

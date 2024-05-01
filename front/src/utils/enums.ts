@@ -3,3 +3,9 @@ export enum ToolsSet {
 	Bomb,
 	Screen
 }
+
+export enum Pages {
+	SIGNIN,
+	SIGNUP,
+	LOGOUT
+}
