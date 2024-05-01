@@ -7,5 +7,5 @@ export enum ToolsSet {
 export enum Pages {
 	SIGNIN,
 	SIGNUP,
-	LOGOUT
+	HOME
 }

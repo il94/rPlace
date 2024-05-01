@@ -29,3 +29,9 @@ type User = {
 	points: number,
 	lastPut: Date | null
 }
+
+export type ErrorResponse = {
+	error: string,
+	message: string,
+	statusCode: number
+}

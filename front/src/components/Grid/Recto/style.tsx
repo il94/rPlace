@@ -2,7 +2,7 @@ import styled from "styled-components";
 import colors from "../../../utils/colors";
 
 export const Style = styled.div<{ $flip: boolean, $display: boolean }>`
-	display: ${({ $display }) => $display ? "flex" : "none" };
+	display: ${({ $display }) => $display ? "none" : "flex" };
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
@@ -12,9 +12,10 @@ export const Style = styled.div<{ $flip: boolean, $display: boolean }>`
 
 	position: relative;
 
+	backface-visibility: hidden;
+
 	background-color: ${colors.window};
-	
-	transform: ${({ $display }) => $display && "rotateY(180deg)" };
+
 `
 
 export const GridTilte = styled.p`

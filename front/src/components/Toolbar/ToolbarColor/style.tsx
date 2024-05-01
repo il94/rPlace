@@ -8,7 +8,6 @@ export const Style = styled.div<{ $backgroundColor: string, $selected: boolean }
 	margin-left: 0.5px;
 	margin-right: 0.5px;
 
-	/* border: solid 1.5px ${colors.borders.cell}; */
 	border-radius: 3px;
 
 	border: ${({ $selected }) => $selected ? `solid 2px ${colors.borders.cell}` : `solid 1px ${colors.borders.cell}` };

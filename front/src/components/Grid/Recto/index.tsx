@@ -4,21 +4,21 @@ import GridConnect from "./GridConnect";
 import { Pages } from "../../../utils/enums";
 import GridHome from "./GridHome";
 
-type PropsGridVerso = {
+type PropsRecto = {
 	flip: boolean,
 	display: boolean,
 	flipGrid: () => void
 }
-function GridVerso({ flip, display, flipGrid }: PropsGridVerso) {
+function Recto({ flip, display, flipGrid }: PropsRecto) {
 
-	const [pageToDisplay, setPageToDisplay] = useState<Pages>(Pages.LOGOUT)
+	const [pageToDisplay, setPageToDisplay] = useState<Pages>(Pages.SIGNIN)
 
 	return (
 		<Style $flip={flip} $display={display}>
 			{
 				pageToDisplay === Pages.SIGNIN || pageToDisplay === Pages.SIGNUP ?
 				<GridConnect pageToDisplay={pageToDisplay} setPageToDisplay={setPageToDisplay}/>
-				: pageToDisplay === Pages.LOGOUT ?
+				: pageToDisplay === Pages.HOME ?
 				<GridHome flipGrid={flipGrid} setPageToDisplay={setPageToDisplay} />
 				:
 				null
@@ -27,4 +27,4 @@ function GridVerso({ flip, display, flipGrid }: PropsGridVerso) {
 	)
 }
 
-export default GridVerso
+export default Recto

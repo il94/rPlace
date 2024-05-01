@@ -16,11 +16,16 @@ function CellPopup({ display, cellId }: PropsCellPopup) {
 
 	useEffect(() => {
 		async function fetchHistory() {
-			const historyResponse: AxiosResponse<HistoryCell[]> = await axios.get(`${import.meta.env.VITE_URL_BACK}/cell/${cellId}/history`, {
-				withCredentials: true
-			})
+			try {
+				const historyResponse: AxiosResponse<HistoryCell[]> = await axios.get(`${import.meta.env.VITE_URL_BACK}/cell/${cellId}/history`, {
+					withCredentials: true
+				})
+				
+				setHistory(historyResponse.data)
+			}
+			catch (error) {
 
-			setHistory(historyResponse.data)
+			}
 		}
 		fetchHistory()
 	}, [cellId])

@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { GridGateway } from 'src/grid/grid.gateway';
 import { CellRepository } from './cell.repository';
 import { UserRepository } from 'src/user/user.repository';
-import { User } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
 
 @Injectable()
 export class CellService {
@@ -55,10 +55,19 @@ export class CellService {
 	}
 	
 	async getHistory(cellId: number) {
-		const history = await this.repository.getCellHistory(cellId)
+		try {
 
-		history.reverse()
-		return (history)
+			const history = await this.repository.getCellHistory(cellId)
+			
+			history.reverse()
+			return (history)
+		}
+		catch (error) {
+			if (error instanceof Prisma.PrismaClientKnownRequestError)
+				throw new ForbiddenException("The provided credentials are not allowed")
+			else
+				throw error
+		}
 	}
 
 	/* ==================== UTILS ================== */

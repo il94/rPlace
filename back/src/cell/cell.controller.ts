@@ -32,8 +32,7 @@ export class CellController {
 	}
 
 	@Get(':id/history')
-	async getHistory(@UserId() userId: number,
-	@Param('id', ParseIntPipe) cellId: number) {
+	async getHistory(@Param('id', ParseIntPipe) cellId: number) {
 		return await this.CellService.getHistory(cellId)
 	}
 

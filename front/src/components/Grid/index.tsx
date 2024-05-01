@@ -1,20 +1,39 @@
 import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react"
 import { CellPopupDisplay, CellType, GridType, ToolbarDisplay, User } from "../../utils/types"
 import Cell from "../Cell"
-import { Recto, Style } from "./style"
+import { Verso, Style } from "./style"
 import { SocketContext } from "../../contexts/socket"
 import { changeAllCellsColor, changeCellColor, changeZoneCellColor } from "../../utils/functions"
 import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch"
 import DrawingBoard from "../DrawingBoard"
 import Toolbar from "../Toolbar"
 import CellPopup from "../Cell/CellPopup"
-import GridVerso from "./GridVerso"
+import Recto from "./Recto"
+import axios, { AxiosError, AxiosResponse } from "axios"
 
 type PropsGrid = {
 	grid: GridType,
 	setGrid: Dispatch<SetStateAction<GridType>>
 }
 function Grid({ grid, setGrid }: PropsGrid) {
+
+	useEffect(() => {
+
+		async function verifyToken() {
+			try {
+				await axios.get(`${import.meta.env.VITE_URL_BACK}/auth`, {
+					withCredentials: true
+				})
+
+				flipGrid()
+			}
+			catch (error) {
+				console.log("Session expiree", error)
+			}
+		}
+
+		verifyToken()
+	}, [])
 
 	const { socket } = useContext(SocketContext)
 
@@ -53,52 +72,50 @@ function Grid({ grid, setGrid }: PropsGrid) {
 	})
 
 	return (
-		<>
-			<button onClick={flipGrid}>flip</button>
-			<Style $flip={flip} >
-				<Recto $flip={flip} $display={display}>
-					<TransformWrapper disablePadding>
-						<TransformComponent>
-							<DrawingBoard>
-								{
-									cellFocused &&
-									<CellPopup
-										cellId={cellFocused.id}
-										display={cellPopupDisplay} />
-								}
-								{
-									cellFocused &&
-									<Toolbar
-										cellDatas={cellFocused}
-										userDatas={userDatas}
-										setUserDatas={setUserDatas}
-										display={toolbarDisplay}
-										setGrid={setGrid}
+		<Style $flip={flip} >
+			<Recto flip={flip} display={display} flipGrid={flipGrid} />
+			<Verso $flip={flip} $display={display}>
+				<TransformWrapper disablePadding>
+					<TransformComponent>
+						<DrawingBoard>
+							{
+								cellFocused &&
+								<CellPopup
+									cellId={cellFocused.id}
+									display={cellPopupDisplay} />
+							}
+							{
+								cellFocused &&
+								<Toolbar
+									cellDatas={cellFocused}
+									userDatas={userDatas}
+									setUserDatas={setUserDatas}
+									display={toolbarDisplay}
+									setGrid={setGrid}
+									newColor={newColor}
+									setNewColor={setNewColor}
+									setCellFocused={setCellFocused as Dispatch<SetStateAction<null>>}
+								/>
+							}
+							{
+								grid.cells.map((cell: CellType, index: number) =>
+									<Cell
+										key={`cell_${index}`}
+										cell={cell}
+										cellFocused={cellFocused}
 										newColor={newColor}
-										setNewColor={setNewColor}
-										setCellFocused={setCellFocused as Dispatch<SetStateAction<null>>}
+										setCellFocused={setCellFocused}
+										setCellPopupDisplay={setCellPopupDisplay}
+										setToolbarDisplay={setToolbarDisplay}
 									/>
-								}
-								{
-									grid.cells.map((cell: CellType, index: number) =>
-										<Cell
-											key={`cell_${index}`}
-											cell={cell}
-											cellFocused={cellFocused}
-											newColor={newColor}
-											setCellFocused={setCellFocused}
-											setCellPopupDisplay={setCellPopupDisplay}
-											setToolbarDisplay={setToolbarDisplay}
-										/>
-									)
-								}
-							</DrawingBoard>
-						</TransformComponent>
-					</TransformWrapper>
-				</Recto>
-				<GridVerso flip={flip} display={display} flipGrid={flipGrid} />
-			</Style>
-		</>
+								)
+							}
+						</DrawingBoard>
+					</TransformComponent>
+				</TransformWrapper>
+			</Verso>
+
+		</Style>
 	)
 }
 
