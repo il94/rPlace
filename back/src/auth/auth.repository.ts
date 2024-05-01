@@ -1,3 +1,4 @@
+import { User } from '.prisma/client';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -18,6 +19,16 @@ export class AuthRepository {
 		})
 
 		return (refreshToken.refreshToken)
+	}
+
+	async getUser(username: string): Promise<User> {
+		const user =  await this.prisma.user.findFirst({
+			where: {
+				username: username
+			}
+		})
+
+		return (user)
 	}
 
 	async createUser(username: string, hash: string): Promise<number> {

@@ -1,38 +1,44 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthRepository } from './auth.repository';
 import * as argon2 from 'argon2';
 
 @Injectable()
 export class AuthService {
 	constructor(
-		private prisma: PrismaService,
 		private jwt: JwtService,
-		private AuthRepository: AuthRepository,
+		private repository: AuthRepository
 	) {}
 
 	async signup(username: string, password: string, response: Response) {
 		const hash = await argon2.hash(password)
 
-		const userId =  await this.AuthRepository.createUser(username, hash)
+		const userId = await this.repository.createUser(username, hash)
 		
 		const token = this.signAccessToken(userId)
 		const refreshToken = this.signRefreshToken(userId)
 		
-		await this.AuthRepository.setRefreshToken(userId, refreshToken)
+		await this.repository.setRefreshToken(userId, refreshToken)
 		
-		response.cookie("access_token", token, { httpOnly: true }).redirect("http://localhost:5173")
+		response.cookie("access_token", token, { httpOnly: true }).redirect(process.env.URL_FRONT)
 	}
 
-	async signin(username: string, password: string) {
-		await this.prisma.user.findFirst({
-			where: {
-				username: username,
-				hash: password
-			}
-		})
+	async signin(username: string, password: string, response: Response) {
+
+		const user = await this.repository.getUser(username)
+
+		if (!(await argon2.verify(user.hash, password)))
+			return false
+		else
+		{
+			const token = this.signAccessToken(user.id)
+			const refreshToken = this.signRefreshToken(user.id)
+
+			await this.repository.setRefreshToken(user.id, refreshToken)
+		
+			response.cookie("access_token", token, { httpOnly: true }).redirect(process.env.URL_FRONT)
+		}
 	}
 
 	/* ==================== UTILS ================== */

@@ -13,8 +13,8 @@ export class AuthController {
 	}
 
 	@Post('signin')
-	async signin(@Body() { username, password }) {
-		console.log(username, password)
+	async signin(@Body() { username, password }, @Res() response: Response) {
+		await this.AuthService.signin(username, password, response)
 	}
 
 	@Get()
