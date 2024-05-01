@@ -41,6 +41,12 @@ export class AuthService {
 		}
 	}
 
+	async logout(userId: number, response: Response) {
+		await this.repository.removeRefreshToken(userId)
+
+		response.clearCookie("access_token").redirect(process.env.URL_FRONT)
+	}
+
 	/* ==================== UTILS ================== */
 
 	isNotExpired(expirationTimestamp: number): boolean {

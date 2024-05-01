@@ -17,7 +17,6 @@ export class GridService implements OnApplicationBootstrap {
 					await this.prisma.cell.create({
 						data: {
 							gridId: grid.id,
-							idOnGrid: i,
 							history: {
 								create: [{
 									color: "#ffffff",
@@ -52,7 +51,7 @@ export class GridService implements OnApplicationBootstrap {
 					gridId: gridId
 				},
 				orderBy: {
-					idOnGrid: 'asc'
+					id: 'asc'
 				},
 				select: {
 					id: true,

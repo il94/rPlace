@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Post, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard } from './auth.guard';
 import { Response } from 'express';
+import { UserId } from '../app.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -17,9 +18,9 @@ export class AuthController {
 		await this.AuthService.signin(username, password, response)
 	}
 
-	@Get()
+	@Delete('logout')
 	@UseGuards(AuthGuard)
-	async test() {
-		console.log("TOKEN OK")
+	async logout(@UserId() userId: number, @Res() response: Response) {
+		await this.AuthService.logout(userId, response)
 	}
 }
