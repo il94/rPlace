@@ -59,7 +59,7 @@ function Grid({ grid, setGrid }: PropsGrid) {
 								{
 									cellFocused &&
 									<CellPopup
-										cellDatas={cellFocused}
+										cellId={cellFocused.id}
 										display={cellPopupDisplay} />
 								}
 								{

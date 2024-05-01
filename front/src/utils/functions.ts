@@ -86,7 +86,8 @@ function drawCircle(start: number, size: number): number[] {
 			const y = centerY - Math.floor(size / 2) + i
 			const x = centerX - Math.floor(size / 2) + j
 			if ((y <= 40 && y >= 0) && (x <= 40 && x >= 1) &&
-				(distance(centerX, centerY, x, y) <= size / 2))
+				(distance(centerX, centerY, x, y) <= size / 2)
+				&& !(y === 40 && x === 40))
 			{
 				const result = y * 40 + x
 				results.push(result)

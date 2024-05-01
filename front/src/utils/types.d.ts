@@ -6,8 +6,7 @@ export type GridType = {
 export type CellType = {
 	id:			number,
 	gridid:		number,
-	color:		string,
-	username:	string
+	color:		string
 }
 
 export type HistoryCell = {

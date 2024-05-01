@@ -1,29 +1,29 @@
 import { useEffect, useState } from "react";
-import { CellPopupDisplay, CellType, HistoryCell } from "../../../utils/types";
+import { CellPopupDisplay, HistoryCell } from "../../../utils/types";
 import { History, Style, WrapperBorder } from "./style";
 import CellPopupData from "./CellPopupData";
 import axios, { AxiosResponse } from "axios";
 
 type PropsCellPopup = {
 	display: CellPopupDisplay,
-	cellDatas: CellType
+	cellId: number
 }
 
-function CellPopup({ display, cellDatas }: PropsCellPopup) {
+function CellPopup({ display, cellId }: PropsCellPopup) {
 
 	const [open, setOpen] = useState(false)
 	const [history, setHistory] = useState<HistoryCell[] | null>(null)
 
 	useEffect(() => {
 		async function fetchHistory() {
-			const historyResponse: AxiosResponse<HistoryCell[]> = await axios.get(`${import.meta.env.VITE_URL_BACK}/cell/${cellDatas.id}/history`, {
+			const historyResponse: AxiosResponse<HistoryCell[]> = await axios.get(`${import.meta.env.VITE_URL_BACK}/cell/${cellId}/history`, {
 				withCredentials: true
 			})
 
 			setHistory(historyResponse.data)
 		}
 		fetchHistory()
-	}, [cellDatas])
+	}, [cellId])
 
 	return (
 		<Style
@@ -33,7 +33,7 @@ function CellPopup({ display, cellDatas }: PropsCellPopup) {
 			{
 				history &&
 				<WrapperBorder>
-					<CellPopupData username={history[history.length - 1].username} color={cellDatas.color} />
+					<CellPopupData username={history[history.length - 1].username} color={history[history.length - 1].color} />
 					<History onClick={() => setOpen(!open)} $open={open}>
 						{
 							open &&

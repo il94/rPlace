@@ -3,14 +3,13 @@ import { Style } from "./style";
 
 type PropsToolbarColor = {
 	color: string,
+	previousColor: string | null,
 	setPreviousColor: Dispatch<SetStateAction<string | null>>
 }
-function ToolbarColor({ color, setPreviousColor }: PropsToolbarColor) {
+function ToolbarColor({ color, previousColor, setPreviousColor }: PropsToolbarColor) {
 	return (
-		color === "none" ?
-		<Style onClick={() => setPreviousColor(null)} $backgroundColor={color}></Style>
-		:
-		<Style onClick={() => setPreviousColor(color)} $backgroundColor={color} />
+		<Style onClick={() => setPreviousColor(color === "none" ? null : color)}
+			$backgroundColor={color} $selected={color === previousColor} />
 	)
 }
 

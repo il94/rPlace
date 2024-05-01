@@ -65,6 +65,7 @@ function Toolbar({ cellDatas, display, previousColor, setPreviousColor, setCellF
 					Object.entries(colors.palette).map((color, index) => 
 						<ToolbarColor
 							key={`toolbarcolor_${index}`}
+							previousColor={previousColor}
 							setPreviousColor={setPreviousColor}
 							color={color[1]}
 						/>)
