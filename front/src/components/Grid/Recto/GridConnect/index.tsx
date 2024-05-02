@@ -47,7 +47,6 @@ function GridConnect() {
 				setRetypePasswordError("Passwords are different")
 				return
 			}
-				
 			const signupResponse: AxiosResponse = await axios.post(`${import.meta.env.VITE_URL_BACK}/auth/signup`, {
 				username: username,
 				password: password,

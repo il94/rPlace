@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { AuthGuard } from './auth.guard';
 import { Response } from 'express';
 import { UserId } from '../app.decorator';
-import { SignupDto } from './auth.dto';
+import { SigninDto, SignupDto } from './auth.dto';
 import { UserService } from 'src/user/user.service';
 
 @Controller('auth')
@@ -19,7 +19,7 @@ export class AuthController {
 	}
 
 	@Post('signin')
-	async signin(@Body() { username, password }, @Res() response: Response) {
+	async signin(@Body() { username, password }: SigninDto, @Res() response: Response) {
 		await this.service.signin(username, password, response)
 	}
 

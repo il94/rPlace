@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { PrismaService } from 'src/config/prisma.service';
 
@@ -55,6 +55,8 @@ export class UserRepository {
 				username: username
 			}
 		})
+		if (!partialUser)
+			throw new NotFoundException("User not found")
 		
 		return (partialUser)
 	}
