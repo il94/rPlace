@@ -75,7 +75,7 @@ function DrawButton({ cellId, toolSelected, newColor, setCellFocused }: PropsDra
 	}
 
 	return (
-		<Style onClick={() => (newColor && !userDatas.cooldown) && postNewColor(newColor)} $available={(newColor && !userDatas.cooldown)}>
+		<Style onClick={() => (newColor && !userDatas.cooldown) && postNewColor(newColor)} $available={(!!newColor && !userDatas.cooldown)}>
 			{
 				userDatas.cooldown ?
 					"..."

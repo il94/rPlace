@@ -1,5 +1,5 @@
 import { ToolsSet } from "../../utils/enums";
-import { CellType, GridType, ToolbarDisplay, User } from "../../utils/types";
+import { CellType, ToolbarDisplay } from "../../utils/types";
 import ToolbarColor from "./ToolbarColor";
 import { Colors, Interfaces, Style, Tools, Wallet } from "./style";
 import { Dispatch, SetStateAction, useContext, useState } from "react";
