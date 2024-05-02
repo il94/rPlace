@@ -6,6 +6,7 @@ import { ActiveText } from "../GridConnect/style";
 import { useContext, useEffect, useState } from "react";
 import { Pages } from "../../../../utils/enums";
 import { GridContext } from "../../../../contexts/GridContext";
+import Cookies from "js-cookie";
 
 const CentralDiv = styled.div`
 	display: flex;
@@ -23,11 +24,19 @@ function GridHome() {
 	const { flipGrid, setPageToDisplay } = useContext(GridContext)
 	
 	async function logout() {
-		await axios.delete(`${import.meta.env.VITE_URL_BACK}/auth/logout`, {
-			withCredentials: true
-		})
+		try {
+			await axios.delete(`${import.meta.env.VITE_URL_BACK}/auth/logout`, {
+				withCredentials: true
+			})
+			
+			setPageToDisplay(Pages.SIGNIN)
+		}
+		catch (error) {
 
-		setPageToDisplay(Pages.SIGNIN)
+		}
+		finally {
+			Cookies.remove("access_token")
+		}
 	}
 
 	const surnames = ["Master", "Guru", "BG", "Your Grace", "Boss", "Le Sang"]

@@ -6,7 +6,7 @@ import { GridTilte, Button } from "../style";
 import { ErrorResponse } from "../../../../utils/types";
 import { GridContext } from "../../../../contexts/GridContext";
 import { AuthContext } from "../../../../contexts/AuthContext";
-
+import Cookies from "js-cookie";
 function GridConnect() {
 
 	const { setUserDatas } = useContext(AuthContext)
@@ -28,7 +28,8 @@ function GridConnect() {
 			{
 				withCredentials: true
 			})
-			setUserDatas(signinResponse.data)
+			Cookies.set("access_token", signinResponse.data.token)
+			setUserDatas(signinResponse.data.user)
 			setPageToDisplay(Pages.HOME)
 		}
 		catch (error) {
@@ -55,7 +56,8 @@ function GridConnect() {
 				withCredentials: true
 			})
 
-			setUserDatas(signupResponse.data)
+			Cookies.set("access_token", signupResponse.data.token)
+			setUserDatas(signupResponse.data.user)
 			setPageToDisplay(Pages.HOME)
 		}
 		catch (error) {

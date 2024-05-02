@@ -15,7 +15,7 @@ export class AuthService {
 		private userRepository: UserRepository
 	) {}
 
-	async signup(username: string, password: string, response: Response) {
+	async signup(username: string, password: string) {
 		try {
 			const hash = await argon2.hash(password)
 
@@ -29,8 +29,8 @@ export class AuthService {
 			delete user.hash
 			delete user.refreshToken
 
-			response.cookie("access_token", token, { httpOnly: true }).send(user)
-			return (user)
+			// response.cookie("access_token", token, { httpOnly: true }).send(user)
+			return ({ user, token})
 
 		}
 		catch (error) {
@@ -43,7 +43,7 @@ export class AuthService {
 		}
 	}
 
-	async signin(username: string, password: string, response: Response) {
+	async signin(username: string, password: string) {
 		try {
 			const user = await this.userRepository.getUserByUsername(username)
 			if (!(await argon2.verify(user.hash, password)))
@@ -58,8 +58,8 @@ export class AuthService {
 				delete user.hash
 				delete user.refreshToken
 
-				response.cookie("access_token", token, { httpOnly: true }).send(user)
-				return (user)
+				// response.cookie("access_token", token, { httpOnly: true }).send(user)
+				return ({ user, token})
 			}	
 		}
 		catch (error) {
@@ -70,11 +70,11 @@ export class AuthService {
 		}
 	}
 
-	async logout(userId: number, response: Response) {
+	async logout(userId: number) {
 		try {
 			await this.repository.removeRefreshToken(userId)
 			
-			response.clearCookie("access_token").send({ status: 'ok' })
+			// response.clearCookie("access_token").send({ status: 'ok' })
 		}
 		catch (error) {
 			console.error(error)

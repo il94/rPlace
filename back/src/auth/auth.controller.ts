@@ -14,13 +14,13 @@ export class AuthController {
 	) {}
 
 	@Post('signup')
-	async signup(@Body() { username, password }: SignupDto, @Res() response: Response) {
-		await this.service.signup(username, password, response)
+	async signup(@Body() { username, password }: SignupDto) {
+		return await this.service.signup(username, password)
 	}
 
 	@Post('signin')
-	async signin(@Body() { username, password }: SigninDto, @Res() response: Response) {
-		await this.service.signin(username, password, response)
+	async signin(@Body() { username, password }: SigninDto) {
+		return await this.service.signin(username, password)
 	}
 
 	@Get()
@@ -31,7 +31,7 @@ export class AuthController {
 
 	@Delete('logout')
 	@UseGuards(AuthGuard)
-	async logout(@UserId() userId: number, @Res() response: Response) {
-		await this.service.logout(userId, response)
+	async logout(@UserId() userId: number) {
+		await this.service.logout(userId)
 	}
 }
