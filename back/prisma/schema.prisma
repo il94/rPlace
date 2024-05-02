@@ -42,6 +42,6 @@ model User {
 	hash			String
 	refreshToken	String?
 
-	points			Int
+	wallet			Int
 	lastPut			DateTime	@default(now())
 }

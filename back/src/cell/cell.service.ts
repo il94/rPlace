@@ -143,7 +143,7 @@ export class CellService {
 	async verifyConditions(userId: number, price: number): Promise<boolean> {
 		const userDatas: Partial<User> = await this.userRepository.getLastPutAndWallet(userId)
 
-		if (this.verifyCooldown(userDatas.lastPut) && this.verifyWallet(userDatas.points, price))
+		if (this.verifyCooldown(userDatas.lastPut) && this.verifyWallet(userDatas.wallet, price))
 			return true
 		return false
 	}

@@ -4,6 +4,7 @@ import { History, Style, WrapperBorder } from "./style";
 import CellPopupData from "./CellPopupData";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { GridContext } from "../../../contexts/GridContext";
+import { Pages } from "../../../utils/enums";
 
 type PropsCellPopup = {
 	display: CellPopupDisplay,
@@ -28,7 +29,7 @@ function CellPopup({ display, cellId }: PropsCellPopup) {
 					const axiosError = error as AxiosError<ErrorResponse>
 					const { statusCode } = axiosError.response?.data!
 					if (statusCode === 401)
-						flipGrid()
+						flipGrid(Pages.SIGNIN)
 				}
 			}
 		}

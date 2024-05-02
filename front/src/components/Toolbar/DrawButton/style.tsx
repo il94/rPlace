@@ -14,7 +14,7 @@ export const Style = styled.button<{ $available: boolean }>`
 
 	background-color: ${({ $available }) => $available ? "#48c500" : colors.button.blocked };
 
-	transition: transform 0.05s linear;
+	transition: transform 0.08s linear;
 
 	&:hover {
 		transform: ${({ $available }) => $available && "scale(1.1)" };

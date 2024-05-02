@@ -26,8 +26,10 @@ type ToolbarDisplay = {
 }
 
 type User = {
-	points: number,
-	lastPut: Date | null
+	username: string,
+	wallet: number,
+	lastPut: Date | null,
+	cooldown: boolean,
 }
 
 export type ErrorResponse = {

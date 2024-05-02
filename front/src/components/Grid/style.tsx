@@ -25,5 +25,5 @@ export const Verso = styled.div<{ $flip: boolean, $display: boolean }>`
 	width: 100%;
 	height: 100%;
 
-	transform: ${({ $flip }) => $flip && "rotateY(180deg)" };
+	transform: ${({ $display }) => $display && "rotateY(180deg)" };
 `

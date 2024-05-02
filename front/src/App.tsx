@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { loadFull } from "tsparticles";
 import background from "./utils/background";
-import SocketProvider from "./contexts/SocketContext";
+import SocketProvider from "./contexts/AuthContext";
 import Loader from "./components/Loader";
 import GridProvider from "./contexts/GridContext";
 

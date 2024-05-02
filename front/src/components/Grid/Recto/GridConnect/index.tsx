@@ -1,14 +1,16 @@
-import { Dispatch, FormEvent, SetStateAction, useContext, useState } from "react";
+import { FormEvent, useContext, useState } from "react";
 import { Form, Input, Label, LabelInput, Inputs, RedirectMessage, ErrorMessage, ActiveText } from "./style";
-import axios, { AxiosError } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import { Pages } from "../../../../utils/enums";
 import { GridTilte, Button } from "../style";
 import { ErrorResponse } from "../../../../utils/types";
 import { GridContext } from "../../../../contexts/GridContext";
+import { AuthContext } from "../../../../contexts/AuthContext";
 
 function GridConnect() {
 
-	const { pageToDisplay, setPageToDisplay, switchPage } = useContext(GridContext)
+	const { setUserDatas } = useContext(AuthContext)
+	const { pageToDisplay, setPageToDisplay } = useContext(GridContext)
 
 	const [username, setUsername] = useState('')
 	const [usernameError, setUsernameError] = useState('')
@@ -19,13 +21,14 @@ function GridConnect() {
 
 	async function signin() {
 		try {
-			await axios.post(`${import.meta.env.VITE_URL_BACK}/auth/signin`, {
+			const signinResponse: AxiosResponse = await axios.post(`${import.meta.env.VITE_URL_BACK}/auth/signin`, {
 				username: username,
 				password: password,
 			},
 			{
 				withCredentials: true
 			})
+			setUserDatas(signinResponse.data)
 			setPageToDisplay(Pages.HOME)
 		}
 		catch (error) {
@@ -45,7 +48,7 @@ function GridConnect() {
 				return
 			}
 				
-			await axios.post(`${import.meta.env.VITE_URL_BACK}/auth/signup`, {
+			const signupResponse: AxiosResponse = await axios.post(`${import.meta.env.VITE_URL_BACK}/auth/signup`, {
 				username: username,
 				password: password,
 			},
@@ -53,6 +56,7 @@ function GridConnect() {
 				withCredentials: true
 			})
 
+			setUserDatas(signupResponse.data)
 			setPageToDisplay(Pages.HOME)
 		}
 		catch (error) {
@@ -108,12 +112,12 @@ function GridConnect() {
 					pageToDisplay === Pages.SIGNIN ?
 					<>
 						Don't have an account?&nbsp;
-						<ActiveText onClick={switchPage}>Sign up</ActiveText>
+						<ActiveText onClick={() => setPageToDisplay(Pages.SIGNUP)}>Sign up</ActiveText>
 					</>
 					:
 					<>
 						Already have an account?&nbsp;
-						<ActiveText onClick={switchPage}>Sign in</ActiveText>
+						<ActiveText onClick={() => setPageToDisplay(Pages.SIGNIN)}>Sign in</ActiveText>
 					</>
 				}
 				</RedirectMessage>

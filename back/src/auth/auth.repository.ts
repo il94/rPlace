@@ -1,5 +1,5 @@
 import { User } from '.prisma/client';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/config/prisma.service';
 
 @Injectable()
@@ -19,30 +19,6 @@ export class AuthRepository {
 		})
 
 		return (refreshToken.refreshToken)
-	}
-
-	async getUser(username: string): Promise<User> {
-		const user =  await this.prisma.user.findFirst({
-			where: {
-				username: username
-			}
-		})
-		if (!user)
-			throw new NotFoundException("User not found")
-		return (user)
-	}
-
-	async createUser(username: string, hash: string): Promise<number> {
-		
-		const userCreated =  await this.prisma.user.create({
-			data: {
-				username: username,
-				hash: hash,
-				points: 0
-			}
-		})
-
-		return (userCreated.id)
 	}
 
 	async setRefreshToken(userId: number, refreshToken: string) {

@@ -4,17 +4,18 @@ import { Style } from "./style";
 import { ErrorResponse, User } from "../../../utils/types";
 import { Dispatch, SetStateAction, useContext } from "react";
 import { GridContext } from "../../../contexts/GridContext";
+import { AuthContext } from "../../../contexts/AuthContext";
 
 type PropsDrawButton = {
 	cellId: number,
 	toolSelected: ToolsSet | null,
 	newColor: string | null,
-	setUserDatas: Dispatch<SetStateAction<User>>,
 	setCellFocused: Dispatch<SetStateAction<null>>
 }
 
-function DrawButton({ cellId, toolSelected, newColor, setUserDatas, setCellFocused }: PropsDrawButton) {
+function DrawButton({ cellId, toolSelected, newColor, setCellFocused }: PropsDrawButton) {
 
+	const { userDatas, setUserDatas } = useContext(AuthContext)
 	const { flipGrid } = useContext(GridContext)
 
 	async function postNewColor(newColor: string) {
@@ -27,8 +28,10 @@ function DrawButton({ cellId, toolSelected, newColor, setUserDatas, setCellFocus
 					withCredentials: true
 				})
 				setUserDatas((prevState: User) => ({
-					points: prevState.points + 1,
-					lastPut: new Date()
+					...prevState,
+					wallet: prevState.wallet + 1,
+					lastPut: new Date(),
+					cooldown: true
 				}))
 			}
 			else if (toolSelected === ToolsSet.Bomb) {
@@ -39,8 +42,10 @@ function DrawButton({ cellId, toolSelected, newColor, setUserDatas, setCellFocus
 					withCredentials: true
 				})
 				setUserDatas((prevState: User) => ({
-					points: prevState.points - 15,
-					lastPut: new Date()
+					...prevState,
+					wallet: prevState.wallet - 15,
+					lastPut: new Date(),
+					cooldown: true
 				}))
 			}	
 			else if (toolSelected === ToolsSet.Screen) {
@@ -51,8 +56,10 @@ function DrawButton({ cellId, toolSelected, newColor, setUserDatas, setCellFocus
 					withCredentials: true
 				})
 				setUserDatas((prevState: User) => ({
-					points: prevState.points - 9999,
-					lastPut: new Date()
+					...prevState,
+					wallet: prevState.wallet - 9999,
+					lastPut: new Date(),
+					cooldown: true
 				}))
 			}
 			setCellFocused(null)
@@ -62,15 +69,17 @@ function DrawButton({ cellId, toolSelected, newColor, setUserDatas, setCellFocus
 				const axiosError = error as AxiosError<ErrorResponse>
 				const { statusCode } = axiosError.response?.data!
 				if (statusCode === 401)
-					flipGrid()
+					flipGrid(Pages.SIGNIN)
 			}
 		}
 	}
 
 	return (
-		<Style onClick={() => newColor && postNewColor(newColor)} $available={!!newColor}>
+		<Style onClick={() => (newColor && !userDatas.cooldown) && postNewColor(newColor)} $available={(newColor && !userDatas.cooldown)}>
 			{
-				toolSelected === ToolsSet.Pen ?
+				userDatas.cooldown ?
+					"..."
+				: toolSelected === ToolsSet.Pen ?
 					"Draw !"
 				: toolSelected === ToolsSet.Bomb ?
 					"BOOM !"

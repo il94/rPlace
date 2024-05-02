@@ -41,11 +41,7 @@ export class AuthGuard implements CanActivate {
 		catch (error) {
 			const routeName = context.getHandler().name;
 			if (routeName === "verifyToken")
-			{
-				const response = context.switchToHttp().getResponse()
-				response.cookie("verify_token", "verify_token", { httpOnly: true })
 				return (false)
-			}
 			throw error
 		}
 

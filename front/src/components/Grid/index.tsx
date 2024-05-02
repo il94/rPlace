@@ -2,39 +2,41 @@ import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react
 import { CellPopupDisplay, CellType, GridType, ToolbarDisplay, User } from "../../utils/types"
 import Cell from "../Cell"
 import { Verso, Style } from "./style"
-import { SocketContext } from "../../contexts/SocketContext"
+import { AuthContext } from "../../contexts/AuthContext"
 import { changeAllCellsColor, changeCellColor, changeZoneCellColor } from "../../utils/functions"
 import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch"
 import DrawingBoard from "../DrawingBoard"
 import Toolbar from "../Toolbar"
 import CellPopup from "../Cell/CellPopup"
 import Recto from "./Recto"
-import axios from "axios"
+import axios, { AxiosResponse } from "axios"
 import { GridContext } from "../../contexts/GridContext"
+import { Pages } from "../../utils/enums"
 
 function Grid() {
 
-	const { grid, setGrid, flipGrid, flip, display } = useContext(GridContext)
+	const { grid, setGrid, flipGrid, flip, display, setPageToDisplay } = useContext(GridContext)
 
 	useEffect(() => {
-
 		async function verifyToken() {
 			try {
-				await axios.get(`${import.meta.env.VITE_URL_BACK}/auth`, {
+				const userResponse: AxiosResponse<User> = await axios.get(`${import.meta.env.VITE_URL_BACK}/auth`, {
 					withCredentials: true
 				})
 
-				flipGrid()
+				setUserDatas(userResponse.data)
+				setPageToDisplay(Pages.HOME)
+				flipGrid(Pages.SIGNIN)
 			}
 			catch (error) {
-				console.log("Session expiree", error)
+				console.error("Invalid or no session")
 			}
 		}
 
 		verifyToken()
 	}, [])
 
-	const { socket } = useContext(SocketContext)
+	const { socket, setUserDatas } = useContext(AuthContext)
 
 	useEffect(() => {
 		socket.on("pixelDrawed", (cellId: number, newColor: string) =>
@@ -55,10 +57,6 @@ function Grid() {
 	const [cellFocused, setCellFocused] = useState<CellType | null>(null)
 	const [newColor, setNewColor] = useState<string | null>(null)
 
-	const [userDatas, setUserDatas] = useState<User>({
-		points: 0, lastPut: null
-	})
-
 	return (
 		<Style $flip={flip} >
 			<Recto />
@@ -76,8 +74,6 @@ function Grid() {
 								cellFocused &&
 								<Toolbar
 									cellDatas={cellFocused}
-									userDatas={userDatas}
-									setUserDatas={setUserDatas}
 									display={toolbarDisplay}
 									newColor={newColor}
 									setNewColor={setNewColor}

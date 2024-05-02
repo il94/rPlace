@@ -3,7 +3,7 @@ import { GridTilte, Button } from "../style";
 import styled from "styled-components";
 import colors from "../../../../utils/colors";
 import { ActiveText } from "../GridConnect/style";
-import { Dispatch, SetStateAction, useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Pages } from "../../../../utils/enums";
 import { GridContext } from "../../../../contexts/GridContext";
 
@@ -30,9 +30,16 @@ function GridHome() {
 		setPageToDisplay(Pages.SIGNIN)
 	}
 
+	const surnames = ["Master", "Guru", "BG", "Your Grace", "Boss", "Le Sang"]
+	const [surname, setSurname] = useState('')
+
+	useEffect(() => {
+		setSurname(surnames[Math.floor(Math.random() * surnames.length)])
+	}, [])
+
 	return (
 		<>
-			<GridTilte>Welcome, Master.</GridTilte>
+			<GridTilte>Welcome, {surname}.</GridTilte>
 			<CentralDiv>
 				<Button onClick={() => flipGrid()}>Start !</Button>
 				<ActiveText onClick={() => logout()}>Logout</ActiveText>

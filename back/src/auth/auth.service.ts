@@ -4,26 +4,34 @@ import { Response } from 'express';
 import { AuthRepository } from './auth.repository';
 import * as argon2 from 'argon2';
 import { Prisma } from '@prisma/client';
+import { UserService } from 'src/user/user.service';
+import { UserRepository } from 'src/user/user.repository';
 
 @Injectable()
 export class AuthService {
 	constructor(
 		private jwt: JwtService,
-		private repository: AuthRepository
+		private repository: AuthRepository,
+		private userRepository: UserRepository
 	) {}
 
 	async signup(username: string, password: string, response: Response) {
 		try {
 			const hash = await argon2.hash(password)
 
-			const userId = await this.repository.createUser(username, hash)
+			const user = await this.userRepository.createUser(username, hash)
 			
-			const token = this.signAccessToken(userId)
-			const refreshToken = this.signRefreshToken(userId)
+			const token = this.signAccessToken(user.id)
+			const refreshToken = this.signRefreshToken(user.id)
 			
-			await this.repository.setRefreshToken(userId, refreshToken)
+			await this.repository.setRefreshToken(user.id, refreshToken)
 			
-			response.cookie("access_token", token, { httpOnly: true }).send({ status: 'ok' })
+			delete user.hash
+			delete user.refreshToken
+
+			response.cookie("access_token", token, { httpOnly: true }).send(user)
+			return (user)
+
 		}
 		catch (error) {
 			if (error.code === 'P2002') 
@@ -37,8 +45,7 @@ export class AuthService {
 
 	async signin(username: string, password: string, response: Response) {
 		try {
-			const user = await this.repository.getUser(username)
-
+			const user = await this.userRepository.getUserByUsername(username)
 			if (!(await argon2.verify(user.hash, password)))
 				throw new NotFoundException("User not found")
 			else
@@ -48,7 +55,11 @@ export class AuthService {
 	
 				await this.repository.setRefreshToken(user.id, refreshToken)
 			
-				response.cookie("access_token", token, { httpOnly: true }).send({ status: 'ok' })
+				delete user.hash
+				delete user.refreshToken
+
+				response.cookie("access_token", token, { httpOnly: true }).send(user)
+				return (user)
 			}	
 		}
 		catch (error) {
@@ -63,10 +74,10 @@ export class AuthService {
 		try {
 			await this.repository.removeRefreshToken(userId)
 			
-			response.clearCookie("access_token").redirect(process.env.URL_FRONT)
+			response.clearCookie("access_token").send({ status: 'ok' })
 		}
 		catch (error) {
-			console.log(error)
+			console.error(error)
 		}
 	}
 

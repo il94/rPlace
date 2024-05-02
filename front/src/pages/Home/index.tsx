@@ -4,10 +4,11 @@ import axios, { AxiosResponse } from "axios"
 import Grid from "../../components/Grid"
 import Loader from "../../components/Loader"
 import { GridContext } from "../../contexts/GridContext"
+import { Pages } from "../../utils/enums"
 
 function Home() {
 
-	const { grid, setGrid, flipGrid } = useContext(GridContext)
+	const { grid, setGrid, flipGrid, pageToDisplay } = useContext(GridContext)
 
 	useEffect(() => {
 		async function fetchGrid() {
@@ -17,15 +18,20 @@ function Home() {
 				setGrid(gridResponse.data)
 			}
 			catch (error) {
-				console.log(error)
+				console.error(error)
 			}
 		}
 		fetchGrid()
 	}, [])
 
+	function determineTilteRedirect() {
+		if (pageToDisplay !== Pages.SIGNIN && pageToDisplay !== Pages.SIGNUP)
+			flipGrid()
+	}
+
 	return (
 		<Style>
-			<Title onClick={flipGrid}>r/Place</Title>
+			<Title onClick={determineTilteRedirect}>r/Place</Title>
 			{
 				grid ?
 				<Grid />
