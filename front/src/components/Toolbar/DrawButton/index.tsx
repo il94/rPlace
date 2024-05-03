@@ -5,6 +5,7 @@ import { ErrorResponse, User } from "../../../utils/types";
 import { Dispatch, SetStateAction, useContext } from "react";
 import { GridContext } from "../../../contexts/GridContext";
 import { AuthContext } from "../../../contexts/AuthContext";
+import Cookies from "js-cookie";
 
 type PropsDrawButton = {
 	cellId: number,
@@ -25,8 +26,11 @@ function DrawButton({ cellId, toolSelected, newColor, setCellFocused }: PropsDra
 					newColor: newColor
 				},
 				{
-					withCredentials: true
+					headers: {
+						'Authorization': `Bearer ${Cookies.get("access_token")}`
+					}
 				})
+
 				setUserDatas((prevState: User) => ({
 					...prevState,
 					wallet: prevState.wallet + 1,
@@ -39,7 +43,9 @@ function DrawButton({ cellId, toolSelected, newColor, setCellFocused }: PropsDra
 					newColor: newColor
 				},
 				{
-					withCredentials: true
+					headers: {
+						'Authorization': `Bearer ${Cookies.get("access_token")}`
+					}
 				})
 				setUserDatas((prevState: User) => ({
 					...prevState,
@@ -53,7 +59,9 @@ function DrawButton({ cellId, toolSelected, newColor, setCellFocused }: PropsDra
 					newColor: newColor
 				},
 				{
-					withCredentials: true
+					headers: {
+						'Authorization': `Bearer ${Cookies.get("access_token")}`
+					}
 				})
 				setUserDatas((prevState: User) => ({
 					...prevState,
@@ -67,9 +75,13 @@ function DrawButton({ cellId, toolSelected, newColor, setCellFocused }: PropsDra
 		catch (error) {
 			if (axios.isAxiosError(error)) {
 				const axiosError = error as AxiosError<ErrorResponse>
-				const { statusCode } = axiosError.response?.data!
+				const { statusCode, message } = axiosError.response?.data!
 				if (statusCode === 401)
+				{
+					console.error(message)
+					Cookies.remove("access_token")
 					flipGrid(Pages.SIGNIN)
+				}
 			}
 		}
 	}

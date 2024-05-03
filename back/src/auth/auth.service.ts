@@ -22,15 +22,14 @@ export class AuthService {
 			const user = await this.userRepository.createUser(username, hash)
 			
 			const token = this.signAccessToken(user.id)
-			const refreshToken = this.signRefreshToken(user.id)
+			// const refreshToken = this.signRefreshToken(user.id)
 			
-			await this.repository.setRefreshToken(user.id, refreshToken)
+			// await this.repository.setRefreshToken(user.id, refreshToken)
 			
 			delete user.hash
-			delete user.refreshToken
+			// delete user.refreshToken
 
-			// response.cookie("access_token", token, { httpOnly: true }).send(user)
-			return ({ user, token})
+			return ({ user, token })
 
 		}
 		catch (error) {
@@ -51,15 +50,14 @@ export class AuthService {
 			else
 			{
 				const token = this.signAccessToken(user.id)
-				const refreshToken = this.signRefreshToken(user.id)
+				// const refreshToken = this.signRefreshToken(user.id)
 	
-				await this.repository.setRefreshToken(user.id, refreshToken)
+				// await this.repository.setRefreshToken(user.id, refreshToken)
 			
 				delete user.hash
-				delete user.refreshToken
+				// delete user.refreshToken
 
-				// response.cookie("access_token", token, { httpOnly: true }).send(user)
-				return ({ user, token})
+				return ({ user, token })
 			}	
 		}
 		catch (error) {
@@ -70,16 +68,14 @@ export class AuthService {
 		}
 	}
 
-	async logout(userId: number) {
-		try {
-			await this.repository.removeRefreshToken(userId)
-			
-			// response.clearCookie("access_token").send({ status: 'ok' })
-		}
-		catch (error) {
-			console.error(error)
-		}
-	}
+	// async logout(userId: number) {
+	// 	try {
+	// 		// await this.repository.removeRefreshToken(userId)
+	// 	}
+	// 	catch (error) {
+	// 		console.error(error)
+	// 	}
+	// }
 
 	/* ==================== UTILS ================== */
 
@@ -89,7 +85,7 @@ export class AuthService {
 	}
 
 	signAccessToken(userId: number) {
-		const token = this.jwt.sign({ userId: userId }, { secret: process.env.JWT_SECRET, expiresIn: "5m" })
+		const token = this.jwt.sign({ userId: userId }, { secret: process.env.JWT_SECRET, expiresIn: "24h" })
 		return (token)
 	}
 

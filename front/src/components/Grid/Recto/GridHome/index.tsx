@@ -1,4 +1,3 @@
-import axios from "axios";
 import { GridTilte, Button } from "../style";
 import styled from "styled-components";
 import colors from "../../../../utils/colors";
@@ -25,17 +24,16 @@ function GridHome() {
 	
 	async function logout() {
 		try {
-			await axios.delete(`${import.meta.env.VITE_URL_BACK}/auth/logout`, {
-				withCredentials: true
-			})
-			
+			// await axios.delete(`${import.meta.env.VITE_URL_BACK}/auth/logout`, {
+			// 	headers: {
+			// 		'Authorization': `Bearer ${Cookies.get("access_token")}`
+			// 	}
+			// })
+			Cookies.remove("access_token")
 			setPageToDisplay(Pages.SIGNIN)
 		}
 		catch (error) {
 
-		}
-		finally {
-			Cookies.remove("access_token")
 		}
 	}
 

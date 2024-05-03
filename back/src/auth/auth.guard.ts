@@ -13,10 +13,10 @@ export class AuthGuard implements CanActivate {
 
 	async canActivate(context: ExecutionContext): Promise<boolean> {
 		try {
+			const access_token = await context.switchToHttp().getRequest().headers['authorization'].split(' ')[1]
 
-			const access_token = context.switchToHttp().getRequest().cookies.access_token
-			if (!access_token)
-				throw new UnauthorizedException
+			if (access_token === "undefined")
+				throw new UnauthorizedException("No access token")
 			else
 			{
 				const payload = this.jwt.decode(access_token)
@@ -24,26 +24,25 @@ export class AuthGuard implements CanActivate {
 				if (this.AuthService.isNotExpired(payload.exp))
 					return true
 				else {
-					const refreshToken = await this.AuthRepository.getRefreshToken(payload.userId)
-					const refreshPayload = this.jwt.decode(refreshToken)
+					// const refreshToken = await this.AuthRepository.getRefreshToken(payload.userId)
+					// const refreshPayload = this.jwt.decode(refreshToken)
 
-					if (this.AuthService.isNotExpired(refreshPayload.exp))
-					{
-						const response = context.switchToHttp().getResponse();
-						response.cookie("access_token", this.AuthService.signAccessToken(payload.userId), { httpOnly: true })
+					// if (this.AuthService.isNotExpired(refreshPayload.exp))
+					// {
+					// 	const response = context.switchToHttp().getResponse();
+					// 	response.cookie("access_token", this.AuthService.signAccessToken(payload.userId), { httpOnly: true })
 
-						return true
-					}
-					throw new UnauthorizedException
+					// 	return true
+					// }
+					throw new UnauthorizedException("Session expired")
 				}
 			}
 		}
 		catch (error) {
-			const routeName = context.getHandler().name;
-			if (routeName === "verifyToken")
-				return (false)
+			// const routeName = context.getHandler().name;
+			// if (routeName === "verifyToken")
+			// 	return (false)
 			throw error
 		}
-
 	}
 }

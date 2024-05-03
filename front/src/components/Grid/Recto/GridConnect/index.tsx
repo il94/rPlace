@@ -19,16 +19,21 @@ function GridConnect() {
 	const [passwordError, setPasswordError] = useState('')
 	const [retypePasswordError, setRetypePasswordError] = useState('')
 
+	function setCookieExpirationDate(): Date {
+		const expirationDate = new Date()
+		expirationDate.setTime(expirationDate.getTime() + (24 * 60 * 60 * 1000))
+
+		return (expirationDate)
+	}
+
 	async function signin() {
 		try {
 			const signinResponse: AxiosResponse = await axios.post(`${import.meta.env.VITE_URL_BACK}/auth/signin`, {
 				username: username,
 				password: password,
-			},
-			{
-				withCredentials: true
 			})
-			Cookies.set("access_token", signinResponse.data.token)
+
+			Cookies.set("access_token", signinResponse.data.token, { expires: setCookieExpirationDate() })
 			setUserDatas(signinResponse.data.user)
 			setPageToDisplay(Pages.HOME)
 		}
@@ -36,8 +41,10 @@ function GridConnect() {
 			if (axios.isAxiosError(error)) {
 				const axiosError = error as AxiosError<ErrorResponse>
 				const { statusCode, message } = axiosError.response?.data!
-				if (statusCode === 404)
-					setUsernameError(message)
+				if (statusCode === 400)
+					setPasswordError(message[0])
+				if (statusCode === 409)
+					setUsernameError(message)	
 			}
 		}
 	}
@@ -51,12 +58,9 @@ function GridConnect() {
 			const signupResponse: AxiosResponse = await axios.post(`${import.meta.env.VITE_URL_BACK}/auth/signup`, {
 				username: username,
 				password: password,
-			},
-			{
-				withCredentials: true
 			})
 
-			Cookies.set("access_token", signupResponse.data.token)
+			Cookies.set("access_token", signupResponse.data.token, { expires: setCookieExpirationDate() })
 			setUserDatas(signupResponse.data.user)
 			setPageToDisplay(Pages.HOME)
 		}
@@ -67,7 +71,7 @@ function GridConnect() {
 				if (statusCode === 400)
 					setPasswordError(message[0])
 				if (statusCode === 409)
-					setUsernameError(message[0])	
+					setUsernameError(message)	
 			}
 		}
 	}

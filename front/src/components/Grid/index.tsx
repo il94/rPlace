@@ -9,34 +9,13 @@ import DrawingBoard from "../DrawingBoard"
 import Toolbar from "../Toolbar"
 import CellPopup from "../Cell/CellPopup"
 import Recto from "./Recto"
-import axios, { AxiosResponse } from "axios"
 import { GridContext } from "../../contexts/GridContext"
-import { Pages } from "../../utils/enums"
 
 function Grid() {
 
-	const { grid, setGrid, flipGrid, flip, display, setPageToDisplay } = useContext(GridContext)
+	const { grid, setGrid, flip, display } = useContext(GridContext)
 
-	useEffect(() => {
-		async function verifyToken() {
-			try {
-				const userResponse: AxiosResponse<User> = await axios.get(`${import.meta.env.VITE_URL_BACK}/auth`, {
-					withCredentials: true
-				})
-
-				setUserDatas(userResponse.data)
-				setPageToDisplay(Pages.HOME)
-				flipGrid(Pages.SIGNIN)
-			}
-			catch (error) {
-				console.error("Invalid or no session")
-			}
-		}
-
-		verifyToken()
-	}, [])
-
-	const { socket, setUserDatas } = useContext(AuthContext)
+	const { socket } = useContext(AuthContext)
 
 	useEffect(() => {
 		socket.on("pixelDrawed", (cellId: number, newColor: string) =>

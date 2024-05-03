@@ -1,11 +1,11 @@
 export enum ToolsSet {
-	Pen,
-	Bomb,
-	Screen
+	Pen = "PEN",
+	Bomb = "BOMB",
+	Screen = "SCREEN"
 }
 
 export enum Pages {
-	SIGNIN,
-	SIGNUP,
-	HOME
+	SIGNIN = "SIGNIN",
+	SIGNUP = "SIGNUP",
+	HOME = "HOME"
 }

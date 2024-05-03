@@ -29,9 +29,9 @@ export class AuthController {
 		return (await this.userService.getUser(userId))
 	}
 
-	@Delete('logout')
-	@UseGuards(AuthGuard)
-	async logout(@UserId() userId: number) {
-		await this.service.logout(userId)
-	}
+	// @Delete('logout')
+	// @UseGuards(AuthGuard)
+	// async logout(@UserId() userId: number) {
+	// 	await this.service.logout(userId)
+	// }
 }

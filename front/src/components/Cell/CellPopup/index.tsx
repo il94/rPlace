@@ -5,6 +5,7 @@ import CellPopupData from "./CellPopupData";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { GridContext } from "../../../contexts/GridContext";
 import { Pages } from "../../../utils/enums";
+import Cookies from "js-cookie";
 
 type PropsCellPopup = {
 	display: CellPopupDisplay,
@@ -19,7 +20,9 @@ function CellPopup({ display, cellId }: PropsCellPopup) {
 		async function fetchHistory() {
 			try {
 				const historyResponse: AxiosResponse<HistoryCell[]> = await axios.get(`${import.meta.env.VITE_URL_BACK}/cell/${cellId}/history`, {
-					withCredentials: true
+					headers: {
+						'Authorization': `Bearer ${Cookies.get("access_token")}`
+					}
 				})
 				
 				setHistory(historyResponse.data)
@@ -27,9 +30,13 @@ function CellPopup({ display, cellId }: PropsCellPopup) {
 			catch (error) {
 				if (axios.isAxiosError(error)) {
 					const axiosError = error as AxiosError<ErrorResponse>
-					const { statusCode } = axiosError.response?.data!
+					const { statusCode, message } = axiosError.response?.data!
 					if (statusCode === 401)
+					{
+						console.error(message)
+						Cookies.remove("access_token")
 						flipGrid(Pages.SIGNIN)
+					}
 				}
 			}
 		}
