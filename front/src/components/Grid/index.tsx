@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react"
-import { CellPopupDisplay, CellType, GridType, ToolbarDisplay, User } from "../../utils/types"
+import { CellPopupDisplay, CellType, GridType, ToolbarDisplay } from "../../utils/types"
 import Cell from "../Cell"
 import { Verso, Style } from "./style"
 import { AuthContext } from "../../contexts/AuthContext"
