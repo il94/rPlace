@@ -1,3 +1,6 @@
+https://rplace.transcendons.fr/
+
+
 Run le projet :
 
 - Installer docker. Pour cela, je recommande d'installer Docker Desktop directement depuis un navigateur. Bien plus simple et fonctionnel qu'en ligne de commandes.
