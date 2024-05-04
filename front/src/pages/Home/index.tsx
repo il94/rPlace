@@ -4,7 +4,7 @@ import axios, { AxiosResponse } from "axios"
 import Grid from "../../components/Grid"
 import Loader from "../../components/Loader"
 import { GridContext } from "../../contexts/GridContext"
-import { Pages } from "../../utils/enums"
+import { Page } from "../../utils/enums"
 
 function Home() {
 
@@ -25,7 +25,7 @@ function Home() {
 	}, [])
 
 	function determineTilteRedirect() {
-		if (pageToDisplay !== Pages.SIGNIN && pageToDisplay !== Pages.SIGNUP)
+		if (pageToDisplay !== Page.SIGNIN && pageToDisplay !== Page.SIGNUP)
 			flipGrid()
 	}
 

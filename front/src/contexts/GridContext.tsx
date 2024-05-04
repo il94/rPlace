@@ -1,28 +1,28 @@
 import { createContext, Dispatch, ReactNode, SetStateAction, useState } from "react";
 import { GridType } from "../utils/types";
-import { Pages } from "../utils/enums";
+import { Page } from "../utils/enums";
 
 export const GridContext = createContext<{
 	grid: GridType | undefined,
 	setGrid: Dispatch<SetStateAction<GridType | undefined>>,
-	flipGrid: (page?: Pages) => void,
+	flipGrid: (page?: Page) => void,
 	flip: boolean,
 	display: boolean,
-	pageToDisplay: Pages,
-	setPageToDisplay: Dispatch<SetStateAction<Pages>>
+	pageToDisplay: Page,
+	setPageToDisplay: Dispatch<SetStateAction<Page>>
 }>({
 	grid: undefined,
 	setGrid: () => {},
 	flipGrid: () => {},
 	flip: false,
 	display: false,
-	pageToDisplay: Pages.SIGNIN,
+	pageToDisplay: Page.SIGNIN,
 	setPageToDisplay: () => {}
 })
 
 function GridProvider({ children }: { children: ReactNode }) {
 
-	function flipGrid(page?: Pages) {
+	function flipGrid(page?: Page) {
 		if (page)
 			setPageToDisplay(page)
 
@@ -37,7 +37,7 @@ function GridProvider({ children }: { children: ReactNode }) {
 	const [flip, setFlip] = useState(false)
 	const [display, setDisplay] = useState(false)
 
-	const [pageToDisplay, setPageToDisplay] = useState<Pages>(Pages.SIGNIN)
+	const [pageToDisplay, setPageToDisplay] = useState<Page>(Page.SIGNIN)
 
 	return (
 		<GridContext.Provider value={{ grid, setGrid, flipGrid, flip, display, pageToDisplay, setPageToDisplay }}>

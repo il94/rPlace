@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
 import { Style } from "./style";
 import GridConnect from "./GridConnect";
-import { Pages } from "../../../utils/enums";
+import { Page } from "../../../utils/enums";
 import GridHome from "./GridHome";
 import { GridContext } from "../../../contexts/GridContext";
 import axios, { AxiosError, AxiosResponse } from "axios";
@@ -24,7 +24,7 @@ function Recto() {
 				})
 
 				setUserDatas(userResponse.data)
-				setPageToDisplay(Pages.HOME)
+				setPageToDisplay(Page.HOME)
 			}
 			catch (error) {
 				if (axios.isAxiosError(error)) {
@@ -43,9 +43,9 @@ function Recto() {
 	return (
 		<Style $flip={flip} $display={display}>
 			{
-				pageToDisplay === Pages.SIGNIN || pageToDisplay === Pages.SIGNUP ?
+				pageToDisplay === Page.SIGNIN || pageToDisplay === Page.SIGNUP ?
 					<GridConnect />
-				: pageToDisplay === Pages.HOME ?
+				: pageToDisplay === Page.HOME ?
 					<GridHome />
 				:
 				null

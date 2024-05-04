@@ -1,7 +1,7 @@
 import { FormEvent, useContext, useState } from "react";
 import { Form, Input, Label, LabelInput, Inputs, RedirectMessage, ErrorMessage, ActiveText } from "./style";
 import axios, { AxiosError, AxiosResponse } from "axios";
-import { Pages } from "../../../../utils/enums";
+import { Page } from "../../../../utils/enums";
 import { GridTilte, Button } from "../style";
 import { ErrorResponse } from "../../../../utils/types";
 import { GridContext } from "../../../../contexts/GridContext";
@@ -35,7 +35,7 @@ function GridConnect() {
 
 			Cookies.set("access_token", signinResponse.data.token, { expires: setCookieExpirationDate() })
 			setUserDatas(signinResponse.data.user)
-			setPageToDisplay(Pages.HOME)
+			setPageToDisplay(Page.HOME)
 		}
 		catch (error) {
 			if (axios.isAxiosError(error)) {
@@ -62,7 +62,7 @@ function GridConnect() {
 
 			Cookies.set("access_token", signupResponse.data.token, { expires: setCookieExpirationDate() })
 			setUserDatas(signupResponse.data.user)
-			setPageToDisplay(Pages.HOME)
+			setPageToDisplay(Page.HOME)
 		}
 		catch (error) {
 			if (axios.isAxiosError(error)) {
@@ -78,12 +78,12 @@ function GridConnect() {
 
 	async function submitDatas(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault()
-		pageToDisplay === Pages.SIGNIN ? signin() : signup()
+		pageToDisplay === Page.SIGNIN ? signin() : signup()
 	}
 
 	return (
 		<>
-			<GridTilte>{ pageToDisplay === Pages.SIGNIN ? "Signin" : "Signup"}</GridTilte>
+			<GridTilte>{ pageToDisplay === Page.SIGNIN ? "Signin" : "Signup"}</GridTilte>
 			<Form onSubmit={(event) => submitDatas(event)}>
 				<Inputs>
 					<LabelInput>
@@ -101,7 +101,7 @@ function GridConnect() {
 						<ErrorMessage>{ passwordError }</ErrorMessage>
 					</LabelInput>
 					{
-						pageToDisplay === Pages.SIGNUP &&
+						pageToDisplay === Page.SIGNUP &&
 						<LabelInput>
 							<Label>Re-type password</Label>
 							<Input type="password" value={retypePassword}
@@ -111,18 +111,18 @@ function GridConnect() {
 						</LabelInput>
 					}
 				</Inputs>
-				<Button type="submit">{ pageToDisplay === Pages.SIGNIN ? "Signin" : "Signup" }</Button>
+				<Button type="submit">{ pageToDisplay === Page.SIGNIN ? "Signin" : "Signup" }</Button>
 				<RedirectMessage>
 				{
-					pageToDisplay === Pages.SIGNIN ?
+					pageToDisplay === Page.SIGNIN ?
 					<>
 						Don't have an account?&nbsp;
-						<ActiveText onClick={() => setPageToDisplay(Pages.SIGNUP)}>Sign up</ActiveText>
+						<ActiveText onClick={() => setPageToDisplay(Page.SIGNUP)}>Sign up</ActiveText>
 					</>
 					:
 					<>
 						Already have an account?&nbsp;
-						<ActiveText onClick={() => setPageToDisplay(Pages.SIGNIN)}>Sign in</ActiveText>
+						<ActiveText onClick={() => setPageToDisplay(Page.SIGNIN)}>Sign in</ActiveText>
 					</>
 				}
 				</RedirectMessage>

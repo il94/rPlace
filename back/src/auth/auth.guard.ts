@@ -7,8 +7,7 @@ import { AuthRepository } from './auth.repository';
 export class AuthGuard implements CanActivate {
 	constructor(
 		private jwt: JwtService,
-		private AuthService: AuthService,
-		private AuthRepository: AuthRepository
+		private AuthService: AuthService
 	) {}
 
 	async canActivate(context: ExecutionContext): Promise<boolean> {

@@ -7,7 +7,7 @@ import { Server } from 'socket.io';
 	}
 })
 
-export class GridGateway {
+export class AppGateway {
     @WebSocketServer()
     server: Server
 }

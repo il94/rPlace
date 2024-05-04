@@ -1,32 +1,27 @@
 import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Response } from 'express';
-import { AuthRepository } from './auth.repository';
 import * as argon2 from 'argon2';
 import { Prisma } from '@prisma/client';
 import { UserService } from 'src/user/user.service';
-import { UserRepository } from 'src/user/user.repository';
 
 @Injectable()
 export class AuthService {
 	constructor(
 		private jwt: JwtService,
-		private repository: AuthRepository,
-		private userRepository: UserRepository
+		private userService: UserService
 	) {}
 
 	async signup(username: string, password: string) {
 		try {
 			const hash = await argon2.hash(password)
 
-			const user = await this.userRepository.createUser(username, hash)
+			const user = await this.userService.createUser(username, hash)
 			
 			const token = this.signAccessToken(user.id)
 			// const refreshToken = this.signRefreshToken(user.id)
 			
 			// await this.repository.setRefreshToken(user.id, refreshToken)
 			
-			delete user.hash
 			// delete user.refreshToken
 
 			return ({ user, token })
@@ -44,7 +39,7 @@ export class AuthService {
 
 	async signin(username: string, password: string) {
 		try {
-			const user = await this.userRepository.getUserByUsername(username)
+			const user = await this.userService.getUserByUsername(username)
 			if (!(await argon2.verify(user.hash, password)))
 				throw new NotFoundException("User not found")
 			else

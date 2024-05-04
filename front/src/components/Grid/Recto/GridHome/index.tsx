@@ -3,7 +3,7 @@ import styled from "styled-components";
 import colors from "../../../../utils/colors";
 import { ActiveText } from "../GridConnect/style";
 import { useContext, useEffect, useState } from "react";
-import { Pages } from "../../../../utils/enums";
+import { Page } from "../../../../utils/enums";
 import { GridContext } from "../../../../contexts/GridContext";
 import Cookies from "js-cookie";
 
@@ -30,7 +30,7 @@ function GridHome() {
 			// 	}
 			// })
 			Cookies.remove("access_token")
-			setPageToDisplay(Pages.SIGNIN)
+			setPageToDisplay(Page.SIGNIN)
 		}
 		catch (error) {
 

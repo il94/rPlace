@@ -6,9 +6,11 @@ import { PrismaService } from './config/prisma.service';
 import { CellService } from './cell/cell.service';
 import { CellModule } from './cell/cell.module';
 import { AuthModule } from './auth/auth.module';
-import { UserRepository } from './user/user.repository';
 import { UserModule } from './user/user.module';
+import { UserService } from './user/user.service';
+import { AppGateway } from './app.gateway';
 import { CellRepository } from './cell/cell.repository';
+import { UserRepository } from './user/user.repository';
 
 @Module({
 	imports: [
@@ -22,9 +24,12 @@ import { CellRepository } from './cell/cell.repository';
 		AppService,
 		PrismaService,
 		CellService,
-		UserRepository,
-		CellRepository
+		UserService,
+		AppGateway,
+		CellRepository,
+		UserRepository
 	],
+	exports: [ AppGateway ]
 })
 
 export class AppModule {}

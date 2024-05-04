@@ -2,25 +2,27 @@ import { Module } from '@nestjs/common';
 import { CellController } from './cell.controller';
 import { PrismaService } from 'src/config/prisma.service';
 import { CellService } from './cell.service';
-import { GridGateway } from 'src/grid/grid.gateway';
+import { AppGateway } from 'src/app.gateway';
 import { CellRepository } from './cell.repository';
+import { UserService } from 'src/user/user.service';
+import { GridModule } from 'src/grid/grid.module';
 import { UserRepository } from 'src/user/user.repository';
-import { JwtModule, JwtService } from '@nestjs/jwt';
+import { JwtService } from '@nestjs/jwt';
 import { AuthService } from 'src/auth/auth.service';
-import { AuthRepository } from 'src/auth/auth.repository';
 
 @Module({
-	imports: [ JwtModule ],
 	controllers: [ CellController ],
 	providers: [
-		PrismaService,
 		CellService,
-		GridGateway,
+		UserService,
 		CellRepository,
+		PrismaService,
+		AppGateway,
 		UserRepository,
 		JwtService,
-		AuthService,
-		AuthRepository
-	]
+		AuthService
+	],
+	exports: [ CellService ]
 })
+
 export class CellModule {}

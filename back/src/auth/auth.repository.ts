@@ -4,9 +4,7 @@ import { PrismaService } from 'src/config/prisma.service';
 
 @Injectable()
 export class AuthRepository {
-	constructor(
-		private prisma: PrismaService
-	) {}
+	constructor(private prisma: PrismaService) {}
 
 	async getRefreshToken(userId: number): Promise<string> {
 		const refreshToken = await this.prisma.user.findUnique({
