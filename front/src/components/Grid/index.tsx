@@ -1,5 +1,4 @@
 import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react"
-import { CellPopupDisplay, CellType, GridType, ToolbarDisplay } from "../../utils/types"
 import Cell from "../Cell"
 import { Verso, Style } from "./style"
 import { AuthContext } from "../../contexts/AuthContext"
@@ -10,6 +9,7 @@ import Toolbar from "../Toolbar"
 import CellPopup from "../Cell/CellPopup"
 import Recto from "./Recto"
 import { GridContext } from "../../contexts/GridContext"
+import { CellPopupDisplay, CellType, GridType, ToolbarDisplay } from "../../utils/types"
 
 function Grid() {
 

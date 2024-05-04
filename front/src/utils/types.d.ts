@@ -1,3 +1,5 @@
+import { Role } from "./enums"
+
 type GridType = {
 	id:		number,
 	cells:	Cell[1600]
@@ -11,7 +13,8 @@ type CellType = {
 
 type HistoryCell = {
 	color:		string,
-	username:	string
+	username:	string,
+	role:		Role
 }
 
 type CellPopupDisplay = {

@@ -10,6 +10,7 @@ import colors from "../../utils/colors";
 import CoinIcon from "../../assets/coin.png"
 import DrawButton from "./DrawButton";
 import { AuthContext } from "../../contexts/AuthContext";
+import { CellType, ToolbarDisplay } from "../../utils/types";
 
 type PropsToolbar = {
 	cellDatas: CellType,

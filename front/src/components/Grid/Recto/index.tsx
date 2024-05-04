@@ -5,9 +5,9 @@ import { Page } from "../../../utils/enums";
 import GridHome from "./GridHome";
 import { GridContext } from "../../../contexts/GridContext";
 import axios, { AxiosError, AxiosResponse } from "axios";
-import { ErrorResponse, User } from "../../../utils/types";
 import { AuthContext } from "../../../contexts/AuthContext";
 import Cookies from "js-cookie";
+import { ErrorResponse, User } from "../../../utils/types";
 
 function Recto() {
 

@@ -3,10 +3,10 @@ import { Form, Input, Label, LabelInput, Inputs, RedirectMessage, ErrorMessage, 
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { Page } from "../../../../utils/enums";
 import { GridTilte, Button } from "../style";
-import { ErrorResponse } from "../../../../utils/types";
 import { GridContext } from "../../../../contexts/GridContext";
 import { AuthContext } from "../../../../contexts/AuthContext";
 import Cookies from "js-cookie";
+import { ErrorResponse } from "../../../../utils/types";
 function GridConnect() {
 
 	const { setUserDatas } = useContext(AuthContext)

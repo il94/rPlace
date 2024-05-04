@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from "react";
-import { CellPopupDisplay, ErrorResponse, HistoryCell } from "../../../utils/types";
 import { History, Style, WrapperBorder } from "./style";
 import CellPopupData from "./CellPopupData";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { GridContext } from "../../../contexts/GridContext";
 import { Page } from "../../../utils/enums";
 import Cookies from "js-cookie";
+import { CellPopupDisplay, ErrorResponse, HistoryCell } from "../../../utils/types";
 
 type PropsCellPopup = {
 	display: CellPopupDisplay,

@@ -1,6 +1,6 @@
 import { createContext, Dispatch, ReactNode, SetStateAction, useState } from "react";
-import { GridType } from "../utils/types";
 import { Page } from "../utils/enums";
+import { GridType } from "../utils/types";
 
 export const GridContext = createContext<{
 	grid: GridType | undefined,

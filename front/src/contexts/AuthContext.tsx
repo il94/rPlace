@@ -1,6 +1,7 @@
 import { createContext, Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { Role } from "../utils/enums";
+import { User } from "../utils/types";
 
 const socket: Socket = io(import.meta.env.VITE_URL_BACK, {
 	transports: ["websocket"]
@@ -27,7 +28,7 @@ function AuthProvider({ children }: { children: ReactNode }) {
 	useEffect(() => {
 		if (userDatas.cooldown) {
 			setTimeout(() => {
-				setUserDatas((prevState) => ({
+				setUserDatas((prevState: User) => ({
 					...prevState,
 					cooldown: false
 				}))

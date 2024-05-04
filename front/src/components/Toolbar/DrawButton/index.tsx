@@ -5,6 +5,7 @@ import { Dispatch, SetStateAction, useContext } from "react";
 import { GridContext } from "../../../contexts/GridContext";
 import { AuthContext } from "../../../contexts/AuthContext";
 import Cookies from "js-cookie";
+import { ErrorResponse, User } from "../../../utils/types";
 
 type PropsDrawButton = {
 	cellId: number,

@@ -1,7 +1,7 @@
 import { Dispatch, MouseEvent, SetStateAction } from "react";
 import { Style } from "./style";
-import { CellPopupDisplay, CellType, ToolbarDisplay } from "../../utils/types";
 import { useControls } from "react-zoom-pan-pinch";
+import { CellPopupDisplay, CellType, ToolbarDisplay } from "../../utils/types";
 
 type PropsCell = {
 	cell: CellType,
