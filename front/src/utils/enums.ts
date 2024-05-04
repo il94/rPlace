@@ -1,11 +1,16 @@
 export enum ToolsSet {
-	Pen = "PEN",
-	Bomb = "BOMB",
-	Screen = "SCREEN"
+	PEN = "PEN",
+	BOMB = "BOMB",
+	SCREEN = "SCREEN"
 }
 
-export enum Pages {
+export enum Page {
 	SIGNIN = "SIGNIN",
 	SIGNUP = "SIGNUP",
 	HOME = "HOME"
+}
+
+export enum Role {
+	USER = "USER",
+	ADMIN = "ADMIN"
 }

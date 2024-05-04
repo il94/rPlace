@@ -1,3 +1,6 @@
+-- CreateEnum
+CREATE TYPE "Role" AS ENUM ('USER', 'ADMIN');
+
 -- CreateTable
 CREATE TABLE "Grid" (
     "id" SERIAL NOT NULL,
@@ -18,6 +21,7 @@ CREATE TABLE "History" (
     "id" SERIAL NOT NULL,
     "cellId" INTEGER NOT NULL,
     "username" TEXT NOT NULL,
+    "role" "Role" NOT NULL,
     "color" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -32,6 +36,7 @@ CREATE TABLE "User" (
     "refreshToken" TEXT,
     "wallet" INTEGER NOT NULL,
     "lastPut" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "role" "Role" NOT NULL,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );

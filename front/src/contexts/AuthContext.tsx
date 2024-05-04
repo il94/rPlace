@@ -1,6 +1,6 @@
 import { createContext, Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
-import { User } from "../utils/types";
+import { Role } from "../utils/enums";
 
 const socket: Socket = io(import.meta.env.VITE_URL_BACK, {
 	transports: ["websocket"]
@@ -11,7 +11,9 @@ export const AuthContext = createContext<{
 	userDatas: User,
 	setUserDatas: Dispatch<SetStateAction<User>>
 }>({
-	userDatas: {username: '', wallet: 0, lastPut: null, cooldown: false},
+	userDatas: {
+		username: '', wallet: 0, lastPut: null, cooldown: false, role: Role.USER
+	},
 	setUserDatas: () => {},
 	socket: socket
 })
@@ -19,7 +21,7 @@ export const AuthContext = createContext<{
 function AuthProvider({ children }: { children: ReactNode }) {
 
 	const [userDatas, setUserDatas] = useState<User>({
-		username: '', wallet: 0, lastPut: null, cooldown: false
+		username: '', wallet: 0, lastPut: null, cooldown: false, role: Role.USER
 	})
 
 	useEffect(() => {
@@ -29,7 +31,7 @@ function AuthProvider({ children }: { children: ReactNode }) {
 					...prevState,
 					cooldown: false
 				}))
-			}, 2000)
+			}, 5000)
 		}
 	}, [userDatas.cooldown])
 

@@ -1,5 +1,4 @@
-import { ToolsSet } from "../../utils/enums";
-import { CellType, ToolbarDisplay } from "../../utils/types";
+import { Role, ToolsSet } from "../../utils/enums";
 import ToolbarColor from "./ToolbarColor";
 import { Colors, Interfaces, Style, Tools, Wallet } from "./style";
 import { Dispatch, SetStateAction, useContext, useState } from "react";
@@ -22,7 +21,7 @@ type PropsToolbar = {
 function Toolbar({ cellDatas, display, newColor, setNewColor, setCellFocused }: PropsToolbar) {
 
 	const { userDatas } = useContext(AuthContext)
-	const [toolSelected, setToolSelected] = useState<ToolsSet | null>(ToolsSet.Pen)
+	const [toolSelected, setToolSelected] = useState<ToolsSet | null>(ToolsSet.PEN)
 
 	return (
 		<Style
@@ -41,16 +40,16 @@ function Toolbar({ cellDatas, display, newColor, setNewColor, setCellFocused }: 
 				}
 				</Colors>
 				<Tools>
-					<Tool tool={ToolsSet.Pen} setToolSelected={setToolSelected} icon={PenIcon} price={0}
-						selected={toolSelected === ToolsSet.Pen} available={userDatas.wallet >= 0} />
-					<Tool tool={ToolsSet.Bomb} setToolSelected={setToolSelected} icon={BombIcon} price={15}
-						selected={toolSelected === ToolsSet.Bomb} available={userDatas.wallet >= 15} />
-					<Tool tool={ToolsSet.Screen} setToolSelected={setToolSelected} icon={ScreenIcon} price={9999}
-						selected={toolSelected === ToolsSet.Screen} available={userDatas.wallet >= 9999} />
+					<Tool tool={ToolsSet.PEN} setToolSelected={setToolSelected} icon={PenIcon} price={0}
+						selected={toolSelected === ToolsSet.PEN} available={(userDatas.wallet >= 0 || userDatas.role === Role.ADMIN)} />
+					<Tool tool={ToolsSet.BOMB} setToolSelected={setToolSelected} icon={BombIcon} price={15}
+						selected={toolSelected === ToolsSet.BOMB} available={(userDatas.wallet >= 15 || userDatas.role === Role.ADMIN)} />
+					<Tool tool={ToolsSet.SCREEN} setToolSelected={setToolSelected} icon={ScreenIcon} price={9999}
+						selected={toolSelected === ToolsSet.SCREEN} available={(userDatas.wallet >= 9999 || userDatas.role === Role.ADMIN)} />
 				</Tools>
 				<Wallet>
 					<p>
-						{userDatas.wallet}
+						{userDatas.role === Role.ADMIN ? "∞" : userDatas.wallet}
 					</p>
 					<img src={CoinIcon} />
 				</Wallet>

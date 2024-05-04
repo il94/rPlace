@@ -4,7 +4,7 @@ import { History, Style, WrapperBorder } from "./style";
 import CellPopupData from "./CellPopupData";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { GridContext } from "../../../contexts/GridContext";
-import { Pages } from "../../../utils/enums";
+import { Page } from "../../../utils/enums";
 import Cookies from "js-cookie";
 
 type PropsCellPopup = {
@@ -35,7 +35,7 @@ function CellPopup({ display, cellId }: PropsCellPopup) {
 					{
 						console.error(message)
 						Cookies.remove("access_token")
-						flipGrid(Pages.SIGNIN)
+						flipGrid(Page.SIGNIN)
 					}
 				}
 			}
@@ -54,7 +54,7 @@ function CellPopup({ display, cellId }: PropsCellPopup) {
 			{
 				history &&
 				<WrapperBorder>
-					<CellPopupData username={history[history.length - 1].username} color={history[history.length - 1].color} />
+					<CellPopupData username={history[history.length - 1].username} color={history[history.length - 1].color} role={history[history.length - 1].role} />
 					<History onClick={() => setOpen(!open)} $open={open}>
 						{
 							open &&
@@ -69,6 +69,7 @@ function CellPopup({ display, cellId }: PropsCellPopup) {
 												key={`cellpopupdata_${index}`}
 												username={entry.username}
 												color={entry.color}
+												role={entry.role}
 												history
 											/>
 										)

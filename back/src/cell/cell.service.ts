@@ -1,83 +1,27 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { GridGateway } from 'src/grid/grid.gateway';
+import { AppGateway } from 'src/app.gateway';
 import { CellRepository } from './cell.repository';
-import { UserRepository } from 'src/user/user.repository';
-import { Prisma, User } from '@prisma/client';
+import { Prisma, Role, User } from '@prisma/client';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class CellService {
 	constructor(
-		private gateway: GridGateway,
+		private appGateway: AppGateway,
 		private repository: CellRepository,
-		private userRepository: UserRepository
+		private userService: UserService
 	) {}
 
-	async setNewColorAll(userId: number, newColor: string) {
-		try {
-			if (await this.verifyConditions(userId, 10000))
-				{
-					await this.userRepository.removePoints(userId, 10000)
-					
-					for (let i = 1; i <= 1600; i++) {
-						await this.drawPixel(userId, i, newColor)
-					}
-					await this.userRepository.setLastInputDate(userId)
-					
-					this.gateway.server.emit("screenUsed", newColor)
-				}
-		}
-		catch (error) {
-			if (error instanceof Prisma.PrismaClientKnownRequestError)
-				throw new ForbiddenException("The provided credentials are not allowed")
-			else
-				throw error
-		}
+	async createCell(gridId: number) {
+		await this.repository.createCell(gridId)
 	}
 
-	async setNewColor(userId: number, cellId: number, newColor: string) {
-		try {
-			if (await this.verifyConditions(userId, 0))
-				{
-					await this.drawPixel(userId, cellId, newColor)
-					await this.userRepository.setLastInputDate(userId)
-					await this.userRepository.addPoint(userId)
-					
-					this.gateway.server.emit("pixelDrawed", cellId, newColor)
-				}
-			}
-			catch (error) {
-				if (error instanceof Prisma.PrismaClientKnownRequestError)
-					throw new ForbiddenException("The provided credentials are not allowed")
-				else
-					throw error
-			}
-		}
+	async getAllCells(gridId: number) {
+		const cells = this.repository.getAllCells(gridId)
 
-	async setNewColorZone(userId: number, cellId: number, newColor: string) {
-		try {
-			if (await this.verifyConditions(userId, 15))
-			{
-				await this.userRepository.removePoints(userId, 15)
-				
-				const results: number[] = this.determineCircle(cellId, 11)
-				
-				for (const id of results) {
-					await this.drawPixel(userId, id, newColor)
-				}
-				
-				await this.userRepository.setLastInputDate(userId)
-				
-				this.gateway.server.emit("bombUsed", cellId, newColor)
-			}
-		}
-		catch (error) {
-			if (error instanceof Prisma.PrismaClientKnownRequestError)
-				throw new ForbiddenException("The provided credentials are not allowed")
-			else
-				throw error
-		}
+		return (cells)
 	}
-	
+
 	async getHistory(cellId: number) {
 		try {
 			const history = await this.repository.getCellHistory(cellId)
@@ -93,16 +37,103 @@ export class CellService {
 		}
 	}
 
+	async setNewColorAll(userId: number, newColor: string) {
+		try {
+			const isAdmin = await this.userService.isAdmin(userId)
+			if (await this.verifyConditions(userId, 10000, isAdmin))
+			{
+				if (!isAdmin)
+					await this.userService.removePoints(userId, 10000)
+				await this.drawScreen(userId, newColor)
+				await this.userService.setLastInputDate(userId)
+				
+				this.appGateway.server.emit("screenUsed", newColor)
+			}
+		}
+		catch (error) {
+			if (error instanceof Prisma.PrismaClientKnownRequestError)
+				throw new ForbiddenException("The provided credentials are not allowed")
+			else
+				throw error
+		}
+	}
+
+	async setNewColor(userId: number, cellId: number, newColor: string) {
+		try {
+			const isAdmin = await this.userService.isAdmin(userId)
+			if (await this.verifyConditions(userId, 0, isAdmin))
+			{
+				await this.drawPixel(userId, cellId, newColor)
+				await this.userService.setLastInputDate(userId)
+				await this.userService.addPoints(userId, 1)
+				
+				this.appGateway.server.emit("pixelDrawed", cellId, newColor)
+			}
+		}
+		catch (error) {
+			if (error instanceof Prisma.PrismaClientKnownRequestError)
+				throw new ForbiddenException("The provided credentials are not allowed")
+			else
+				throw error
+		}
+	}
+
+	async setNewColorZone(userId: number, cellId: number, newColor: string) {
+		try {
+			const isAdmin = await this.userService.isAdmin(userId)
+			if (await this.verifyConditions(userId, 15, isAdmin))
+			{
+				if (!isAdmin)
+					await this.userService.removePoints(userId, 15)
+				await this.drawBomb(userId, cellId, newColor)
+				await this.userService.setLastInputDate(userId)
+				
+				this.appGateway.server.emit("bombUsed", cellId, newColor)
+			}
+		}
+		catch (error) {
+			if (error instanceof Prisma.PrismaClientKnownRequestError)
+				throw new ForbiddenException("The provided credentials are not allowed")
+			else
+				throw error
+		}
+	}
+
 	/* ==================== UTILS ================== */
 
 	async drawPixel(userId: number, cellId: number, newColor: string) {
-		const username = await this.userRepository.getUsername(userId)
+		const username = await this.userService.getUsername(userId)
+		const role = await this.userService.getRole(userId)
 	
-		await this.repository.createCellHistoryEntry(username, cellId, newColor)
+		await this.putPixel(cellId, username, newColor, role)
+	}
+
+	async drawBomb(userId: number, cellId: number, newColor: string) {
+		const username = await this.userService.getUsername(userId)
+		const role = await this.userService.getRole(userId)
+	
+		const results: number[] = this.determineCircle(cellId, 11)
+		for (const id of results) {
+			await this.putPixel(id, username, newColor, role)
+		}
+	}
+
+	async drawScreen(userId: number, newColor: string) {
+		const username = await this.userService.getUsername(userId)
+		const role = await this.userService.getRole(userId)
+		
+		for (let i = 1; i <= 1600; i++) {
+			await this.putPixel(i, username, newColor, role)
+		}
+	}
+
+	async putPixel(cellId: number, username: string, newColor: string, role: Role) {
+		await this.repository.createCellHistoryEntry(username, cellId, newColor, role)
 		const count = await this.repository.getCellHistoryCount(cellId)
 		if (count > 5)
 			await this.repository.deleteCellHistoryLatestEntry(cellId)
 	}
+
 
 	determineCircle(start: number, size: number): number[] {
 		function getIndexLine(position: number) {
@@ -140,10 +171,10 @@ export class CellService {
 		return (results)
 	}
 
-	async verifyConditions(userId: number, price: number): Promise<boolean> {
-		const userDatas: Partial<User> = await this.userRepository.getLastPutAndWallet(userId)
+	async verifyConditions(userId: number, price: number, isAdmin: boolean): Promise<boolean> {
+		const userDatas: Partial<User> = await this.userService.getUser(userId)
 
-		if (this.verifyCooldown(userDatas.lastPut) && this.verifyWallet(userDatas.wallet, price))
+		if (isAdmin || (this.verifyCooldown(userDatas.lastPut) && this.verifyWallet(userDatas.wallet, price)))
 			return true
 		return false
 	}

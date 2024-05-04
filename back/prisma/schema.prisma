@@ -13,6 +13,11 @@ datasource db {
 	url = env("DATABASE_URL")
 }
 
+enum Role {
+	USER
+	ADMIN
+}
+
 model Grid {
     id     Int    @id @default(autoincrement())
     cells  Cell[] @relation("GridToCell")
@@ -32,6 +37,7 @@ model History {
 	cellId		Int
 
 	username	String
+	role		Role
 	color		String
 	createdAt	DateTime	@default(now())
 }
@@ -44,4 +50,5 @@ model User {
 
 	wallet			Int
 	lastPut			DateTime	@default(now())
+	role			Role
 }

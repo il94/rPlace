@@ -1,7 +1,6 @@
 import axios, { AxiosError } from "axios";
-import { Pages, ToolsSet } from "../../../utils/enums";
+import { Page, Role, ToolsSet } from "../../../utils/enums";
 import { Style } from "./style";
-import { ErrorResponse, User } from "../../../utils/types";
 import { Dispatch, SetStateAction, useContext } from "react";
 import { GridContext } from "../../../contexts/GridContext";
 import { AuthContext } from "../../../contexts/AuthContext";
@@ -21,7 +20,7 @@ function DrawButton({ cellId, toolSelected, newColor, setCellFocused }: PropsDra
 
 	async function postNewColor(newColor: string) {
 		try {
-			if (toolSelected === ToolsSet.Pen) {
+			if (toolSelected === ToolsSet.PEN) {
 				await axios.post(`${import.meta.env.VITE_URL_BACK}/cell/${cellId}`, {
 					newColor: newColor
 				},
@@ -35,10 +34,10 @@ function DrawButton({ cellId, toolSelected, newColor, setCellFocused }: PropsDra
 					...prevState,
 					wallet: prevState.wallet + 1,
 					lastPut: new Date(),
-					cooldown: true
+					cooldown: (prevState.role === Role.ADMIN ? false : true)
 				}))
 			}
-			else if (toolSelected === ToolsSet.Bomb) {
+			else if (toolSelected === ToolsSet.BOMB) {
 				await axios.post(`${import.meta.env.VITE_URL_BACK}/cell/${cellId}/zone`, {
 					newColor: newColor
 				},
@@ -49,12 +48,12 @@ function DrawButton({ cellId, toolSelected, newColor, setCellFocused }: PropsDra
 				})
 				setUserDatas((prevState: User) => ({
 					...prevState,
-					wallet: prevState.wallet - 15,
+					wallet: (prevState.role === Role.ADMIN ? prevState.wallet : prevState.wallet - 15),
 					lastPut: new Date(),
-					cooldown: true
+					cooldown: (prevState.role === Role.ADMIN ? false : true)
 				}))
 			}	
-			else if (toolSelected === ToolsSet.Screen) {
+			else if (toolSelected === ToolsSet.SCREEN) {
 				await axios.post(`${import.meta.env.VITE_URL_BACK}/cell/all`, {
 					newColor: newColor
 				},
@@ -65,9 +64,9 @@ function DrawButton({ cellId, toolSelected, newColor, setCellFocused }: PropsDra
 				})
 				setUserDatas((prevState: User) => ({
 					...prevState,
-					wallet: prevState.wallet - 9999,
+					wallet: (prevState.role === Role.ADMIN ? prevState.wallet : prevState.wallet - 9999),
 					lastPut: new Date(),
-					cooldown: true
+					cooldown: (prevState.role === Role.ADMIN ? false : true)
 				}))
 			}
 			setCellFocused(null)
@@ -80,22 +79,24 @@ function DrawButton({ cellId, toolSelected, newColor, setCellFocused }: PropsDra
 				{
 					console.error(message)
 					Cookies.remove("access_token")
-					flipGrid(Pages.SIGNIN)
+					flipGrid(Page.SIGNIN)
 				}
 			}
 		}
 	}
 
 	return (
-		<Style onClick={() => (newColor && !userDatas.cooldown) && postNewColor(newColor)} $available={(!!newColor && !userDatas.cooldown)}>
+		<Style onClick={() => (newColor && (!userDatas.cooldown || userDatas.role === Role.ADMIN)) && postNewColor(newColor)} $available={(!!newColor && !userDatas.cooldown) || userDatas.role === Role.ADMIN}>
 			{
-				userDatas.cooldown ?
+				userDatas.role === Role.ADMIN ?
+					"YOLO"
+				: userDatas.cooldown ?
 					"..."
-				: toolSelected === ToolsSet.Pen ?
+				: toolSelected === ToolsSet.PEN ?
 					"Draw !"
-				: toolSelected === ToolsSet.Bomb ?
+				: toolSelected === ToolsSet.BOMB ?
 					"BOOM !"
-				: toolSelected === ToolsSet.Screen ?
+				: toolSelected === ToolsSet.SCREEN ?
 					"WTF"
 				: null
 			}

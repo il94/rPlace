@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { History } from '@prisma/client';
+import { History, Role } from '@prisma/client';
 import { PrismaService } from 'src/config/prisma.service';
 
 @Injectable()
@@ -8,6 +8,43 @@ export class CellRepository {
 		private prisma: PrismaService
 	) {}
 
+	async createCell(gridId: number) {
+		await this.prisma.cell.create({
+			data: {
+				gridId: gridId,
+				history: {
+					create: [{
+						color: "#ffffff",
+						username: "r/Place",
+						role: Role.ADMIN
+					}]
+				}
+			}
+		})
+	}
+
+	async getAllCells(gridId: number) {
+		const cells = await this.prisma.cell.findMany({
+			where: {
+				gridId: gridId
+			},
+			orderBy: {
+				id: 'asc'
+			},
+			select: {
+				id: true,
+				history: {
+					orderBy: {
+						createdAt: 'desc'
+					},
+					take: 1
+				}
+			}
+		})
+
+		return (cells)
+	}
+
 	async getCellHistory(cellId: number): Promise<Partial<History>[]> {
 		const history = await this.prisma.history.findMany({
 			where: {
@@ -15,7 +52,8 @@ export class CellRepository {
 			},
 			select: {
 				color: true,
-				username: true
+				username: true,
+				role: true
 			},
 			orderBy: {
 				createdAt: 'desc'
@@ -52,12 +90,13 @@ export class CellRepository {
 		})
 	}
 
-	async createCellHistoryEntry(username: string, cellId: number, newColor: string) {
+	async createCellHistoryEntry(username: string, cellId: number, newColor: string, role: Role) {
 		await this.prisma.history.create({
 			data: {
 				cellId: cellId,
 				color: newColor,
-				username: username
+				username: username,
+				role: role
 			}
 		})
 	}

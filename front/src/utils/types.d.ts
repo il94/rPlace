@@ -1,15 +1,15 @@
-export type GridType = {
+type GridType = {
 	id:		number,
 	cells:	Cell[1600]
 }
 
-export type CellType = {
+type CellType = {
 	id:			number,
 	gridid:		number,
 	color:		string
 }
 
-export type HistoryCell = {
+type HistoryCell = {
 	color:		string,
 	username:	string
 }
@@ -30,9 +30,10 @@ type User = {
 	wallet: number,
 	lastPut: Date | null,
 	cooldown: boolean,
+	role: Role
 }
 
-export type ErrorResponse = {
+type ErrorResponse = {
 	error: string,
 	message: string,
 	statusCode: number
