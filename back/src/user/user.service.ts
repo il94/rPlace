@@ -20,9 +20,8 @@ export class UserService {
 		}
 	}
 
-	async createUser(username: string, password: string) {
+	async createUser(username: string, hash: string) {
 		try {
-			const hash = await argon2.hash(password)
 			const partialUser = await this.repository.createUser(username, hash)
 
 			return (partialUser)

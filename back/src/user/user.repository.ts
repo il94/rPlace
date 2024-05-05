@@ -89,7 +89,8 @@ export class UserRepository {
 				username: true,
 				wallet: true,
 				lastPut: true,
-				role: true
+				role: true,
+				hash: true
 			}
 		})
 		if (!partialUser)
