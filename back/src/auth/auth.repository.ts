@@ -16,11 +16,13 @@ export class AuthRepository {
 			}
 		})
 
+		console.log(`User ${userId} | getRefreshToken() :`)
+		console.table(refreshToken.refreshToken)
 		return (refreshToken.refreshToken)
 	}
 
 	async setRefreshToken(userId: number, refreshToken: string) {
-		await this.prisma.user.update({
+		const log = await this.prisma.user.update({
 			where: {
 				id: userId
 			},
@@ -28,10 +30,13 @@ export class AuthRepository {
 				refreshToken: refreshToken,
 			}
 		})
+
+		console.log(`User ${userId} | setRefreshToken() :`)
+		console.table(log)
 	}
 
 	async removeRefreshToken(userId: number) {
-		await this.prisma.user.update({
+		const log = await this.prisma.user.update({
 			where: {
 				id: userId
 			},
@@ -39,5 +44,8 @@ export class AuthRepository {
 				refreshToken: null,
 			}
 		})
+
+		console.log(`User ${userId} | removeRefreshToken() :`)
+		console.table(log)
 	}
 }

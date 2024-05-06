@@ -6,7 +6,6 @@ export class AppService implements OnApplicationBootstrap {
 	constructor (private userService: UserService) {}
 
 	async onApplicationBootstrap() {
-		
 		const rootExist = await this.userService.rootExist()
 		if (!rootExist)
 		{

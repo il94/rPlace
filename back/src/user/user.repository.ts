@@ -24,6 +24,8 @@ export class UserRepository {
 			}
 		})
 
+		console.log(`User created | createUser() :`)
+		console.table(userCreated)
 		return (userCreated)
 	}
 
@@ -44,6 +46,8 @@ export class UserRepository {
 			}
 		})
 
+		console.log(`User created | createRoot() :`)
+		console.table(rootCreated)
 		return (rootCreated)
 	}
 
@@ -61,6 +65,8 @@ export class UserRepository {
 			}
 		})
 
+		console.log(`User ${userId} | getUserById() :`)
+		console.table(partialUser)
 		return (partialUser)
 	}
 
@@ -79,6 +85,8 @@ export class UserRepository {
 			}
 		})
 		
+		console.log(`User ${username} | getUserByUsername() :`)
+		console.table(partialUser)
 		return (partialUser)
 	}
 
@@ -92,6 +100,8 @@ export class UserRepository {
 			}
 		})
 
+		console.log(`User ${userId} | getUsername() :`)
+		console.table(username)
 		return (username.username)
 	}
 
@@ -105,11 +115,13 @@ export class UserRepository {
 			}
 		})
 
+		console.log(`User ${userId} | getRole() :`)
+		console.table(role.role)
 		return (role.role)
 	}
 
 	async getLastEntries(username: string, count: number): Promise<History[] | null> {
-		const twoLastEntries = await this.prisma.history.findMany({
+		const lastEntries = await this.prisma.history.findMany({
 			where: {
 				username: username
 			},
@@ -119,11 +131,13 @@ export class UserRepository {
 			take: count
 		})
 
-		return (twoLastEntries)
+		console.log(`User ${username} | getLastEntries() :`)
+		console.table(lastEntries)
+		return (lastEntries)
 	}
 
 	async addPoint(userId: number, value: number) {
-		await this.prisma.user.update({
+		const log = await this.prisma.user.update({
 			where: {
 				id: userId
 			},
@@ -133,10 +147,13 @@ export class UserRepository {
 				}
 			}
 		})
+
+		console.log(`User ${userId} | addPoint() :`)
+		console.table(log)
 	}
 
 	async removePoints(userId: number, value: number) {
-		await this.prisma.user.update({
+		const log = await this.prisma.user.update({
 			where: {
 				id: userId
 			},
@@ -146,10 +163,13 @@ export class UserRepository {
 				}
 			}
 		})
+
+		console.log(`User ${userId} | removePoints() :`)
+		console.table(log)
 	}
 
 	async setRole(userId: number, newRole: Role) {
-		await this.prisma.user.update({
+		const log = await this.prisma.user.update({
 			where: {
 				id: userId
 			},
@@ -157,10 +177,13 @@ export class UserRepository {
 				role: newRole
 			}
 		})
+
+		console.log(`User ${userId} | setRole() :`)
+		console.table(log)
 	}
 
 	async setLastInputDate(userId: number, newDate: Date) {
-		await this.prisma.user.update({
+		const log = await this.prisma.user.update({
 			where: {
 				id: userId
 			},
@@ -168,5 +191,8 @@ export class UserRepository {
 				lastPut: newDate
 			}
 		})
+
+		console.log(`User ${userId} | setLastInputDate() :`)
+		console.table(log)
 	}
 }

@@ -9,12 +9,16 @@ export class GridRepository {
 	async createGrid(): Promise<Grid> {
 		const grid = await this.prisma.grid.create({})
 
+		console.log(`Grid created | createGrid() :`)
+		console.table(grid)
 		return (grid)
 	}
 
 	async getGrid(): Promise<Grid | null> {
 		const grid = await this.prisma.grid.findFirst({})
 
+		console.log(`Grid | getGrid() :`)
+		console.table(grid)
 		return (grid)
 	}
 }

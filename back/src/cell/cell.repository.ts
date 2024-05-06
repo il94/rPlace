@@ -9,7 +9,7 @@ export class CellRepository {
 	) {}
 
 	async createCell(gridId: number) {
-		await this.prisma.cell.create({
+		const log = await this.prisma.cell.create({
 			data: {
 				gridId: gridId,
 				history: {
@@ -21,6 +21,9 @@ export class CellRepository {
 				}
 			}
 		})
+
+		console.log(`Grid ${gridId} | createCell() :\n`)
+		console.table(log)
 	}
 
 	async getAllCells(gridId: number): Promise<CellOnGrid[]> {
@@ -42,6 +45,8 @@ export class CellRepository {
 			}
 		})
 
+		console.log(`Grid ${gridId} | getAllCells() :`)
+		console.table(cells)
 		return (cells)
 	}
 
@@ -61,6 +66,8 @@ export class CellRepository {
 			take: 5
 		})
 
+		console.table(`Cell ${cellId} | getCellHistory() :`)
+		console.table(history)
 		return (history)
 	}
 
@@ -71,6 +78,8 @@ export class CellRepository {
 			}
 		})
 
+		console.log(`Cell ${cellId} | getCellHistoryCount() :`)
+		console.table(count)
 		return (count)
 	}
 	
@@ -83,15 +92,18 @@ export class CellRepository {
 				createdAt: 'asc'
 			}
 		})
-		await this.prisma.history.delete({
+		const log = await this.prisma.history.delete({
 			where: {
 				id: latest.id
 			}
 		})
+
+		console.log(`Cell ${cellId} | deleteCellHistoryLatestEntry() :`)
+		console.table(log)
 	}
 
 	async createCellHistoryEntry(username: string, cellId: number, newColor: string, role: Role) {
-		await this.prisma.history.create({
+		const log = await this.prisma.history.create({
 			data: {
 				cellId: cellId,
 				color: newColor,
@@ -99,5 +111,8 @@ export class CellRepository {
 				role: role
 			}
 		})
+
+		console.log(`Cell ${cellId} | createCellHistoryEntry() :`)
+		console.table(log)
 	}
 }
