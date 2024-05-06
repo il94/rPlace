@@ -1,7 +1,7 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { AppGateway } from 'src/app.gateway';
 import { CellRepository } from './cell.repository';
-import { Prisma, Role, User } from '@prisma/client';
+import { History, Role, User } from '@prisma/client';
 import { UserService } from 'src/user/user.service';
 import { config } from 'src/config/config';
 
@@ -13,18 +13,20 @@ export class CellService {
 		private userService: UserService
 	) {}
 
+	// Cree une cellule
 	async createCell(gridId: number) {
 		await this.repository.createCell(gridId)
 	}
 
-	async getAllCells(gridId: number) {
+	// Retourne toute les cellules
+	async getAllCells(gridId: number): Promise<CellOnGrid[]> {
 		const cells = this.repository.getAllCells(gridId)
 
 		return (cells)
 	}
 
 	// Retourne l'historique d'une cellule
-	async getHistory(cellId: number) {
+	async getHistory(cellId: number): Promise<Partial<History>[]> {
 		const history = await this.repository.getCellHistory(cellId)
 		
 		history.reverse()

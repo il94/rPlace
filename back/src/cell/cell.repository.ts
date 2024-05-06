@@ -23,7 +23,7 @@ export class CellRepository {
 		})
 	}
 
-	async getAllCells(gridId: number) {
+	async getAllCells(gridId: number): Promise<CellOnGrid[]> {
 		const cells = await this.prisma.cell.findMany({
 			where: {
 				gridId: gridId

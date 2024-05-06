@@ -1,6 +1,7 @@
 import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import { GridRepository } from './grid.repository';
 import { CellService } from 'src/cell/cell.service';
+import { Grid } from '@prisma/client';
 
 @Injectable()
 export class GridService implements OnApplicationBootstrap {
@@ -9,9 +10,9 @@ export class GridService implements OnApplicationBootstrap {
 		private cellService: CellService
 	) {}
 
+	// Cree la grille
 	async onApplicationBootstrap() {
-
-		const gridExist = await this.repository.findGrid()
+		const gridExist = await this.gridExist()
 		if (!gridExist)
 		{
 			try {
@@ -26,25 +27,26 @@ export class GridService implements OnApplicationBootstrap {
 		}
 	}
 
-	async getGrid() {
-		try {
-			const emptyGrid = await this.repository.getGrid()
-			const cellsGrid = await this.cellService.getAllCells(emptyGrid.id)
+	// Retourne la grille
+	async getGrid(): Promise<Grid> {
+		const emptyGrid = await this.repository.getGrid()
+		const cellsGrid = await this.cellService.getAllCells(emptyGrid.id)
 
-			const grid = {
-				id: emptyGrid.id,
-				cells: cellsGrid.map((cell) => {
-					return {
-						id: cell.id,
-						color: cell.history[0].color
-					}
-				})
-			}
+		const grid = {
+			id: emptyGrid.id,
+			cells: cellsGrid.map((cell: CellOnGrid) => {
+				return {
+					id: cell.id,
+					color: cell.history[0].color
+				}
+			})
+		}
 
-			return (grid)
-		}
-		catch (error) {
-			throw error
-		}
+		return (grid)
+	}
+
+	// Verifie si la grille existe
+	async gridExist(): Promise<boolean> {
+		return (!!await this.repository.getGrid())
 	}
 }

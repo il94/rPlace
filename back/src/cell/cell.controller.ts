@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, ParseIntPipe, Post, UseGuards } from '@ne
 import { CellService } from './cell.service';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { UserId } from 'src/app.decorator';
+import { History } from '@prisma/client';
 
 @Controller('cell')
 @UseGuards(AuthGuard)
@@ -33,7 +34,7 @@ export class CellController {
 
 	// Retourne l'historique d'une cellule
 	@Get(':id/history')
-	async getHistory(@Param('id', ParseIntPipe) cellId: number) {
+	async getHistory(@Param('id', ParseIntPipe) cellId: number): Promise<Partial<History>[]> {
 		return await this.CellService.getHistory(cellId)
 	}
 
