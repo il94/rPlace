@@ -37,7 +37,7 @@ export const Inputs = styled.div`
 	align-items: center;
 
 
-	height: 70%;
+	height: 60%;
 
 `
 
@@ -49,7 +49,7 @@ export const LabelInput = styled.div`
 	align-items: center;
 
 	width: 100%;
-	height: 90px;
+	height: 70px;
 `
 
 export const Label = styled.label`
@@ -74,6 +74,8 @@ export const Input = styled.input`
 `
 
 export const ErrorMessage = styled.p`
+	height: 19px;
+
 	font-size: 16px;
 	font-weight: lighter;
 	color: ${colors.text.error};

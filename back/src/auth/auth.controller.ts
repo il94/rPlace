@@ -12,16 +12,19 @@ export class AuthController {
 		private userService: UserService
 	) {}
 
+	// Cree un compte et renvoie un token d'authentification
 	@Post('signup')
-	async signup(@Body() { username, password }: SignupDto) {
+	async signup(@Body() { username, password }: SignupDto): Promise<AuthType> {
 		return await this.service.signup(username, password)
 	}
 
+	// Renvoie un token d'authentification
 	@Post('signin')
-	async signin(@Body() { username, password }: SigninDto) {
+	async signin(@Body() { username, password }: SigninDto): Promise<AuthType> {
 		return await this.service.signin(username, password)
 	}
 
+	// Verifie le token fourni
 	@Get()
 	@UseGuards(AuthGuard)
 	async verifyToken(@UserId() userId: number) {

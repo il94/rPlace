@@ -1,8 +1,8 @@
-import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as argon2 from 'argon2';
-import { Prisma } from '@prisma/client';
 import { UserService } from 'src/user/user.service';
+import { config } from 'src/config/config';
 
 @Injectable()
 export class AuthService {
@@ -11,7 +11,8 @@ export class AuthService {
 		private userService: UserService
 	) {}
 
-	async signup(username: string, password: string) {
+	// Cree un compte et renvoie un token d'authentification
+	async signup(username: string, password: string): Promise<AuthType> {
 		try {
 			const hash = await argon2.hash(password)
 
@@ -28,16 +29,12 @@ export class AuthService {
 
 		}
 		catch (error) {
-			if (error.code === 'P2002') 
-				throw new ConflictException("Username already taken")
-			else if (error instanceof Prisma.PrismaClientKnownRequestError)
-				throw new ForbiddenException("The provided credentials are not allowed")
-			else
-				throw error
+			throw error
 		}
 	}
 
-	async signin(username: string, password: string) {
+	// Renvoie un token d'authentification
+	async signin(username: string, password: string): Promise<AuthType> {
 		try {
 			const user = await this.userService.getUserByUsername(username)
 			if (!(await argon2.verify(user.hash, password)))
@@ -56,10 +53,7 @@ export class AuthService {
 			}	
 		}
 		catch (error) {
-			if (error instanceof Prisma.PrismaClientKnownRequestError)
-				throw new ForbiddenException("The provided credentials are not allowed")
-			else
-				throw error
+			throw error
 		}
 	}
 
@@ -79,13 +73,14 @@ export class AuthService {
 		return currentTimestamp < expirationTimestamp;
 	}
 
+	// Cree un token
 	signAccessToken(userId: number) {
-		const token = this.jwt.sign({ userId: userId }, { secret: process.env.JWT_SECRET, expiresIn: "24h" })
+		const token = this.jwt.sign({ userId: userId }, { secret: process.env.JWT_SECRET, expiresIn: config.expiresTokenDuration })
 		return (token)
 	}
 
 	signRefreshToken(userId: number) {
-		const refreshToken = this.jwt.sign({ userId: userId }, { secret: process.env.JWT_SECRET, expiresIn: "14d" })
+		const refreshToken = this.jwt.sign({ userId: userId }, { secret: process.env.JWT_SECRET, expiresIn: config.expiresRefreshDuration })
 		return (refreshToken)
 	}
 

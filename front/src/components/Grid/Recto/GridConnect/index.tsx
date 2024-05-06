@@ -13,11 +13,13 @@ function GridConnect() {
 	const { pageToDisplay, setPageToDisplay } = useContext(GridContext)
 
 	const [username, setUsername] = useState('')
-	const [usernameError, setUsernameError] = useState('')
 	const [password, setPassword] = useState('')
 	const [retypePassword, setRetypePassword] = useState('')
-	const [passwordError, setPasswordError] = useState('')
-	const [retypePasswordError, setRetypePasswordError] = useState('')
+	const [error, setError] = useState('')
+
+	function capitalize(s: string) {
+		return s.charAt(0).toUpperCase() + s.slice(1);
+	}
 
 	function setCookieExpirationDate(): Date {
 		const expirationDate = new Date()
@@ -26,59 +28,43 @@ function GridConnect() {
 		return (expirationDate)
 	}
 
-	async function signin() {
-		try {
-			const signinResponse: AxiosResponse = await axios.post(`${import.meta.env.VITE_URL_BACK}/auth/signin`, {
-				username: username,
-				password: password,
-			})
-
-			Cookies.set("access_token", signinResponse.data.token, { expires: setCookieExpirationDate() })
-			setUserDatas(signinResponse.data.user)
-			setPageToDisplay(Page.HOME)
-		}
-		catch (error) {
-			if (axios.isAxiosError(error)) {
-				const axiosError = error as AxiosError<ErrorResponse>
-				const { statusCode, message } = axiosError.response?.data!
-				if (statusCode === 400)
-					setPasswordError(message[0])
-				if (statusCode === 409)
-					setUsernameError(message)	
-			}
-		}
-	}
-
-	async function signup() {
-		try {
-			if (password !== retypePassword) {
-				setRetypePasswordError("Passwords are different")
-				return
-			}
-			const signupResponse: AxiosResponse = await axios.post(`${import.meta.env.VITE_URL_BACK}/auth/signup`, {
-				username: username,
-				password: password,
-			})
-
-			Cookies.set("access_token", signupResponse.data.token, { expires: setCookieExpirationDate() })
-			setUserDatas(signupResponse.data.user)
-			setPageToDisplay(Page.HOME)
-		}
-		catch (error) {
-			if (axios.isAxiosError(error)) {
-				const axiosError = error as AxiosError<ErrorResponse>
-				const { statusCode, message } = axiosError.response?.data!
-				if (statusCode === 400)
-					setPasswordError(message[0])
-				if (statusCode === 409)
-					setUsernameError(message)	
-			}
-		}
-	}
-
 	async function submitDatas(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault()
-		pageToDisplay === Page.SIGNIN ? signin() : signup()
+		try {
+
+			let authResponse: AxiosResponse
+
+			if (pageToDisplay === Page.SIGNIN) {
+				authResponse = await axios.post(`${import.meta.env.VITE_URL_BACK}/auth/signin`, {
+					username: username,
+					password: password,
+				})
+			}
+			else {
+				if (password !== retypePassword) {
+					setError("Passwords are different")
+					return
+				}
+				authResponse = await axios.post(`${import.meta.env.VITE_URL_BACK}/auth/signup`, {
+					username: username,
+					password: password,
+				})
+			}
+
+			Cookies.set("access_token", authResponse.data.token, { expires: setCookieExpirationDate() })
+			setUserDatas(authResponse.data.user)
+			setPageToDisplay(Page.HOME)
+		}
+		catch (error) {
+			if (axios.isAxiosError(error)) {
+				const axiosError = error as AxiosError<ErrorResponse>
+				const { statusCode, message } = axiosError.response?.data!
+				if (statusCode === 400)
+					setError(message[0])
+				else if (statusCode === 404 || statusCode === 409)
+					setError(message)
+			}
+		}
 	}
 
 	return (
@@ -90,15 +76,13 @@ function GridConnect() {
 						<Label>Username</Label>
 						<Input value={username}
 							onChange={(event) => setUsername(event.target.value)}
-							onFocus={() => setUsernameError('')} />
-						<ErrorMessage>{ usernameError }</ErrorMessage>
+							onFocus={() => setError('')} />
 						</LabelInput>
 					<LabelInput>
 						<Label>Password</Label>
 						<Input type="password"value={password}
 							onChange={(event) => setPassword(event.target.value)} 
-							onFocus={() => {setPasswordError(''); setRetypePasswordError('')}} />
-						<ErrorMessage>{ passwordError }</ErrorMessage>
+							onFocus={() => setError('')} />
 					</LabelInput>
 					{
 						pageToDisplay === Page.SIGNUP &&
@@ -106,11 +90,11 @@ function GridConnect() {
 							<Label>Re-type password</Label>
 							<Input type="password" value={retypePassword}
 								onChange={(event) => setRetypePassword(event.target.value)}
-								onFocus={() => {setPasswordError(''); setRetypePasswordError('')}} />
-							<ErrorMessage>{ retypePasswordError }</ErrorMessage>
+								onFocus={() => setError('')} />
 						</LabelInput>
 					}
 				</Inputs>
+				<ErrorMessage>{ capitalize(error) }</ErrorMessage>
 				<Button type="submit">{ pageToDisplay === Page.SIGNIN ? "Signin" : "Signup" }</Button>
 				<RedirectMessage>
 				{

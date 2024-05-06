@@ -1,6 +1,6 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { UserRepository } from './user.repository';
-import { Prisma, Role } from '@prisma/client';
+import { Prisma, Role, User } from '@prisma/client';
 import * as argon2 from 'argon2';
 
 @Injectable()
@@ -20,14 +20,18 @@ export class UserService {
 		}
 	}
 
-	async createUser(username: string, hash: string) {
+	// Cree un user
+	async createUser(username: string, hash: string): Promise<Partial<User>> {
 		try {
 			const partialUser = await this.repository.createUser(username, hash)
 
 			return (partialUser)
 		}
 		catch (error) {
-			console.error(error)
+			if (error instanceof Prisma.PrismaClientKnownRequestError)
+				throw new ConflictException("Username already taken")
+			else
+				throw error
 		}
 	}
 
@@ -42,29 +46,31 @@ export class UserService {
 		}
 	}
 
+	// Retourne un user
 	async getUser(userId: number) {
 		try {
 			const partialUser = await this.repository.getUserById(userId)
+			if (!partialUser)
+				throw new NotFoundException("User not found")
+
 			return (partialUser)
 		}
 		catch (error) {
-			if (error instanceof Prisma.PrismaClientKnownRequestError)
-				throw new ForbiddenException("The provided credentials are not allowed")
-			else
-				throw error
+			throw error
 		}
 	}
 
-	async getUserByUsername(username: string) {
+	// Retourne un user
+	async getUserByUsername(username: string): Promise<Partial<User>> {
 		try {
 			const partialUser = await this.repository.getUserByUsername(username)
+			if (!partialUser)
+				throw new NotFoundException("User not found")
+	
 			return (partialUser)
 		}
 		catch (error) {
-			if (error instanceof Prisma.PrismaClientKnownRequestError)
-				throw new ForbiddenException("The provided credentials are not allowed")
-			else
-				throw error
+			throw error
 		}
 	}
 

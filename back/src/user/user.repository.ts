@@ -60,7 +60,7 @@ export class UserRepository {
 		return (username.username)
 	}
 
-	async getUserById(userId: number): Promise<Partial<User>> {
+	async getUserById(userId: number): Promise<Partial<User> | null> {
 		const partialUser = await this.prisma.user.findUnique({
 			where: {
 				id: userId
@@ -73,13 +73,11 @@ export class UserRepository {
 				role: true
 			}
 		})
-		if (!partialUser)
-			throw new NotFoundException("User not found")
 
 		return (partialUser)
 	}
 
-	async getUserByUsername(username: string): Promise<Partial<User>> {
+	async getUserByUsername(username: string): Promise<Partial<User> | null> {
 		const partialUser = await this.prisma.user.findUnique({
 			where: {
 				username: username
@@ -93,8 +91,6 @@ export class UserRepository {
 				hash: true
 			}
 		})
-		if (!partialUser)
-			throw new NotFoundException("User not found")
 		
 		return (partialUser)
 	}
