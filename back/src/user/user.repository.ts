@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Role, User } from '@prisma/client';
+import { History, Role, User } from '@prisma/client';
 import { PrismaService } from 'src/config/prisma.service';
 
 @Injectable()
@@ -47,19 +47,6 @@ export class UserRepository {
 		return (rootCreated)
 	}
 
-	async getUsername(userId: number): Promise<string> {
-		const username = await this.prisma.user.findUnique({
-			where: {
-				id: userId
-			},
-			select: {
-				username: true
-			}
-		})
-
-		return (username.username)
-	}
-
 	async getUserById(userId: number): Promise<Partial<User> | null> {
 		const partialUser = await this.prisma.user.findUnique({
 			where: {
@@ -95,7 +82,20 @@ export class UserRepository {
 		return (partialUser)
 	}
 
-	async getRole(userId: number) {
+	async getUsername(userId: number): Promise<string | null> {
+		const username = await this.prisma.user.findUnique({
+			where: {
+				id: userId
+			},
+			select: {
+				username: true
+			}
+		})
+
+		return (username.username)
+	}
+
+	async getRole(userId: number): Promise<Role | null> {
 		const role = await this.prisma.user.findUnique({
 			where: {
 				id: userId
@@ -122,7 +122,7 @@ export class UserRepository {
 		return (userDatas)
 	}
 
-	async getLastEntries(username: string, count: number) {
+	async getLastEntries(username: string, count: number): Promise<History[] | null> {
 		const twoLastEntries = await this.prisma.history.findMany({
 			where: {
 				username: username

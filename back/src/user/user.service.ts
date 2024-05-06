@@ -1,24 +1,11 @@
 import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { UserRepository } from './user.repository';
-import { Prisma, Role, User } from '@prisma/client';
+import { History, Prisma, Role, User } from '@prisma/client';
 import * as argon2 from 'argon2';
 
 @Injectable()
 export class UserService {
 	constructor(private repository: UserRepository) {}
-
-	async setRole(authId: number, targetId: number, newRole: Role) {
-		try {
-			const authIsAdmin = await this.isAdmin(authId)
-			if (!authIsAdmin)
-				throw new ForbiddenException("You doesn't have permission for this action")
-
-			await this.repository.setRole(targetId, newRole)
-		}
-		catch (error) {
-			console.error(error)
-		}
-	}
 
 	// Cree un user
 	async createUser(username: string, hash: string): Promise<Partial<User>> {
@@ -30,8 +17,9 @@ export class UserService {
 		catch (error) {
 			if (error instanceof Prisma.PrismaClientKnownRequestError)
 				throw new ConflictException("Username already taken")
-			else
-				throw error
+			
+			console.error(error)
+			throw error
 		}
 	}
 
@@ -56,6 +44,8 @@ export class UserService {
 			return (partialUser)
 		}
 		catch (error) {
+			if (!(error instanceof NotFoundException))
+				console.error(error)
 			throw error
 		}
 	}
@@ -70,27 +60,39 @@ export class UserService {
 			return (partialUser)
 		}
 		catch (error) {
+			if (!(error instanceof NotFoundException))
+				console.error(error)
 			throw error
 		}
 	}
 
+	// Retourne le username du user
 	async getUsername(userId: number) {
 		try {
 			const username = await this.repository.getUsername(userId)
+			if (!username)
+				throw new NotFoundException("User not found")
 			return (username)
 		}
 		catch (error) {
-			console.error(error)
+			if (!(error instanceof NotFoundException))
+				console.error(error)
+			throw error
 		}
 	}
 
+	// Retourne le role du user
 	async getRole(userId: number) {
 		try {
 			const role = await this.repository.getRole(userId)
+			if (!role)
+				throw new NotFoundException("User not found")
 			return (role)
 		}
 		catch (error) {
-			console.error(error)
+			if (!(error instanceof NotFoundException))
+				console.error(error)
+			throw error
 		}
 	}
 	
@@ -104,7 +106,8 @@ export class UserService {
 		}
 	}
 
-	async getLastEntries(username: string, count: number) {
+	// Retourne les dernieres entrees du user
+	async getLastEntries(username: string, count: number): Promise<History[] | null> {
 		try {
 			const lastEntries = await this.repository.getLastEntries(username, count)
 		
@@ -114,6 +117,7 @@ export class UserService {
 		}
 		catch (error) {
 			console.error(error)
+			throw error
 		}
 	}
 
@@ -129,6 +133,7 @@ export class UserService {
 		}
 	}
 
+	// Verifie si le user est admin
 	async isAdmin(userId: number) {
 		try {
 			const role = await this.repository.getRole(userId)
@@ -137,9 +142,26 @@ export class UserService {
 		}
 		catch (error) {
 			console.error(error)
+			throw error
 		}
 	}
-	
+
+	// Change le role d'un user
+	async setRole(authId: number, targetId: number, newRole: Role) {
+		try {
+			const authIsAdmin = await this.isAdmin(authId)
+			if (!authIsAdmin)
+				throw new ForbiddenException("You doesn't have permission for this action")
+
+			await this.repository.setRole(targetId, newRole)
+		}
+		catch (error) {
+			if (!(error instanceof ForbiddenException))
+				console.error(error)
+			throw error
+		}
+	}
+
 	async addPoints(userId: number, value: number) {
 		try {
 			await this.repository.addPoint(userId, value)

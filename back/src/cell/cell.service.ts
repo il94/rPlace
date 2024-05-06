@@ -3,6 +3,7 @@ import { AppGateway } from 'src/app.gateway';
 import { CellRepository } from './cell.repository';
 import { Prisma, Role, User } from '@prisma/client';
 import { UserService } from 'src/user/user.service';
+import { config } from 'src/config/config';
 
 @Injectable()
 export class CellService {
@@ -22,85 +23,58 @@ export class CellService {
 		return (cells)
 	}
 
+	// Retourne l'historique d'une cellule
 	async getHistory(cellId: number) {
-		try {
-			const history = await this.repository.getCellHistory(cellId)
-			
-			history.reverse()
-			return (history)
-		}
-		catch (error) {
-			if (error instanceof Prisma.PrismaClientKnownRequestError)
-				throw new ForbiddenException("The provided credentials are not allowed")
-			else
-				throw error
-		}
+		const history = await this.repository.getCellHistory(cellId)
+		
+		history.reverse()
+		return (history)
 	}
 
+	// Change la couleur de tout les pixels
 	async setNewColorAll(userId: number, newColor: string) {
-		try {
-			const isAdmin = await this.userService.isAdmin(userId)
-			if (await this.verifyConditions(userId, 10000, isAdmin))
-			{
-				if (!isAdmin)
-					await this.userService.removePoints(userId, 10000)
-				await this.drawScreen(userId, newColor)
-				await this.userService.setLastInputDate(userId)
-				
-				this.appGateway.server.emit("screenUsed", newColor)
-			}
-		}
-		catch (error) {
-			if (error instanceof Prisma.PrismaClientKnownRequestError)
-				throw new ForbiddenException("The provided credentials are not allowed")
-			else
-				throw error
+		const isAdmin = await this.userService.isAdmin(userId)
+		if (await this.verifyConditions(userId, config.screenPrice, isAdmin))
+		{
+			if (!isAdmin)
+				await this.userService.removePoints(userId, config.screenPrice)
+			await this.drawScreen(userId, newColor)
+			await this.userService.setLastInputDate(userId)
+			
+			this.appGateway.server.emit("screenUsed", newColor)
 		}
 	}
 
+	// Change la couleur d'un pixel
 	async setNewColor(userId: number, cellId: number, newColor: string) {
-		try {
-			const isAdmin = await this.userService.isAdmin(userId)
-			if (await this.verifyConditions(userId, 0, isAdmin))
-			{
-				await this.drawPixel(userId, cellId, newColor)
-				await this.userService.setLastInputDate(userId)
-				await this.userService.addPoints(userId, 1)
-				
-				this.appGateway.server.emit("pixelDrawed", cellId, newColor)
-			}
-		}
-		catch (error) {
-			if (error instanceof Prisma.PrismaClientKnownRequestError)
-				throw new ForbiddenException("The provided credentials are not allowed")
-			else
-				throw error
+		const isAdmin = await this.userService.isAdmin(userId)
+		if (await this.verifyConditions(userId, config.penPrice, isAdmin))
+		{
+			await this.drawPixel(userId, cellId, newColor)
+			await this.userService.setLastInputDate(userId)
+			await this.userService.addPoints(userId, config.penGive)
+			
+			this.appGateway.server.emit("pixelDrawed", cellId, newColor)
 		}
 	}
 
+	// Change la couleur des pixels en zone
 	async setNewColorZone(userId: number, cellId: number, newColor: string) {
-		try {
-			const isAdmin = await this.userService.isAdmin(userId)
-			if (await this.verifyConditions(userId, 15, isAdmin))
-			{
-				if (!isAdmin)
-					await this.userService.removePoints(userId, 15)
-				await this.drawBomb(userId, cellId, newColor)
-				await this.userService.setLastInputDate(userId)
-				
-				this.appGateway.server.emit("bombUsed", cellId, newColor)
-			}
-		}
-		catch (error) {
-			if (error instanceof Prisma.PrismaClientKnownRequestError)
-				throw new ForbiddenException("The provided credentials are not allowed")
-			else
-				throw error
+		const isAdmin = await this.userService.isAdmin(userId)
+		if (await this.verifyConditions(userId, config.bombPrice, isAdmin))
+		{
+			if (!isAdmin)
+				await this.userService.removePoints(userId, config.bombPrice)
+			await this.drawBomb(userId, cellId, newColor)
+			await this.userService.setLastInputDate(userId)
+			
+			this.appGateway.server.emit("bombUsed", cellId, newColor)
 		}
 	}
 
 	/* ==================== UTILS ================== */
 
+	// Colore un pixel
 	async drawPixel(userId: number, cellId: number, newColor: string) {
 		const username = await this.userService.getUsername(userId)
 		const role = await this.userService.getRole(userId)
@@ -108,16 +82,18 @@ export class CellService {
 		await this.putPixel(cellId, username, newColor, role)
 	}
 
+	// Colore une zone
 	async drawBomb(userId: number, cellId: number, newColor: string) {
 		const username = await this.userService.getUsername(userId)
 		const role = await this.userService.getRole(userId)
 	
-		const results: number[] = this.determineCircle(cellId, 11)
+		const results: number[] = this.determineCircle(cellId, config.bombZone)
 		for (const id of results) {
 			await this.putPixel(id, username, newColor, role)
 		}
 	}
 
+	// Colore la grille
 	async drawScreen(userId: number, newColor: string) {
 		const username = await this.userService.getUsername(userId)
 		const role = await this.userService.getRole(userId)
@@ -127,6 +103,7 @@ export class CellService {
 		}
 	}
 
+	// Pose un pixel sur la grille
 	async putPixel(cellId: number, username: string, newColor: string, role: Role) {
 		await this.repository.createCellHistoryEntry(username, cellId, newColor, role)
 		const count = await this.repository.getCellHistoryCount(cellId)
@@ -134,7 +111,7 @@ export class CellService {
 			await this.repository.deleteCellHistoryLatestEntry(cellId)
 	}
 
-
+	// Definit la zone a colorer
 	determineCircle(start: number, size: number): number[] {
 		function getIndexLine(position: number) {
 			return (Math.floor(position / 40))
@@ -171,6 +148,7 @@ export class CellService {
 		return (results)
 	}
 
+	// Verifie si les conditions sont remplies pour dessiner un pixel
 	async verifyConditions(userId: number, price: number, isAdmin: boolean): Promise<boolean> {
 		const userDatas: Partial<User> = await this.userService.getUser(userId)
 
@@ -189,17 +167,19 @@ export class CellService {
 		return false
 	}
 	
-	
+	// Verifie si l'entree est effectuee 5 secondes minimum apres la precedente
 	verifyCooldown(lastEntry: Date, currentEntry: Date): boolean {
 		const difference = Math.abs(lastEntry.getTime() / 1000 - currentEntry.getTime() / 1000);
 		
 		return (difference >= 5)
 	}
-	
+
+	// Verifie si le user a assez de points
 	verifyWallet(wallet: number, price: number): boolean {
 		return (wallet >= price)
 	}
 
+	// Calcule la difference entre les 3 dernieres entrees pour detecter l'utilisation de scripts
 	async verifyBot(username: string, lastEntry: Date, currentEntry: Date, isAdmin: boolean): Promise<boolean> {
 
 		if (isAdmin)

@@ -6,6 +6,7 @@ import { GridContext } from "../../../contexts/GridContext";
 import { AuthContext } from "../../../contexts/AuthContext";
 import Cookies from "js-cookie";
 import { ErrorResponse, User } from "../../../utils/types";
+import { axiosHeaders, config } from "../../../utils/config";
 
 type PropsDrawButton = {
 	cellId: number,
@@ -16,6 +17,19 @@ type PropsDrawButton = {
 
 function DrawButton({ cellId, toolSelected, newColor, setCellFocused }: PropsDrawButton) {
 
+	function setNewWallet(role: Role, toolUsed: ToolsSet | null, prevWallet: number): number {
+		if (role === Role.ADMIN)
+			return (prevWallet)
+		if (toolUsed === ToolsSet.PEN)
+			return (prevWallet + config.penGive)
+		else if (toolUsed === ToolsSet.BOMB)
+			return (prevWallet - config.bombPrice)
+		else if (toolUsed === ToolsSet.SCREEN)
+			return (prevWallet - config.screenPrice)
+		else
+			return (0)
+	}
+
 	const { userDatas, setUserDatas } = useContext(AuthContext)
 	const { flipGrid } = useContext(GridContext)
 
@@ -24,52 +38,26 @@ function DrawButton({ cellId, toolSelected, newColor, setCellFocused }: PropsDra
 			if (toolSelected === ToolsSet.PEN) {
 				await axios.post(`${import.meta.env.VITE_URL_BACK}/cell/${cellId}`, {
 					newColor: newColor
-				},
-				{
-					headers: {
-						'Authorization': `Bearer ${Cookies.get("access_token")}`
-					}
-				})
-
-				setUserDatas((prevState: User) => ({
-					...prevState,
-					wallet: prevState.wallet + 1,
-					lastPut: new Date(),
-					cooldown: (prevState.role === Role.ADMIN ? false : true)
-				}))
+				}, axiosHeaders)
 			}
 			else if (toolSelected === ToolsSet.BOMB) {
 				await axios.post(`${import.meta.env.VITE_URL_BACK}/cell/${cellId}/zone`, {
 					newColor: newColor
-				},
-				{
-					headers: {
-						'Authorization': `Bearer ${Cookies.get("access_token")}`
-					}
-				})
-				setUserDatas((prevState: User) => ({
-					...prevState,
-					wallet: (prevState.role === Role.ADMIN ? prevState.wallet : prevState.wallet - 15),
-					lastPut: new Date(),
-					cooldown: (prevState.role === Role.ADMIN ? false : true)
-				}))
+				}, axiosHeaders)
 			}	
 			else if (toolSelected === ToolsSet.SCREEN) {
 				await axios.post(`${import.meta.env.VITE_URL_BACK}/cell/all`, {
 					newColor: newColor
-				},
-				{
-					headers: {
-						'Authorization': `Bearer ${Cookies.get("access_token")}`
-					}
-				})
-				setUserDatas((prevState: User) => ({
-					...prevState,
-					wallet: (prevState.role === Role.ADMIN ? prevState.wallet : prevState.wallet - 9999),
-					lastPut: new Date(),
-					cooldown: (prevState.role === Role.ADMIN ? false : true)
-				}))
+				}, axiosHeaders)
 			}
+
+			setUserDatas((prevState: User) => ({
+				...prevState,
+				wallet: setNewWallet(prevState.role, toolSelected, prevState.wallet),
+				lastPut: new Date(),
+				cooldown: (prevState.role === Role.ADMIN ? false : true)
+			}))
+
 			setCellFocused(null)
 		}
 		catch (error) {
@@ -83,6 +71,8 @@ function DrawButton({ cellId, toolSelected, newColor, setCellFocused }: PropsDra
 					flipGrid(Page.SIGNIN)
 				}
 			}
+			else
+				console.error(error)
 		}
 	}
 

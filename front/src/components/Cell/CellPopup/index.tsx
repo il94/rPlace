@@ -6,6 +6,7 @@ import { GridContext } from "../../../contexts/GridContext";
 import { Page } from "../../../utils/enums";
 import Cookies from "js-cookie";
 import { CellPopupDisplay, ErrorResponse, HistoryCell } from "../../../utils/types";
+import { axiosHeaders } from "../../../utils/config";
 
 type PropsCellPopup = {
 	display: CellPopupDisplay,
@@ -19,11 +20,7 @@ function CellPopup({ display, cellId }: PropsCellPopup) {
 	useEffect(() => {
 		async function fetchHistory() {
 			try {
-				const historyResponse: AxiosResponse<HistoryCell[]> = await axios.get(`${import.meta.env.VITE_URL_BACK}/cell/${cellId}/history`, {
-					headers: {
-						'Authorization': `Bearer ${Cookies.get("access_token")}`
-					}
-				})
+				const historyResponse: AxiosResponse<HistoryCell[]> = await axios.get(`${import.meta.env.VITE_URL_BACK}/cell/${cellId}/history`, axiosHeaders)
 				
 				setHistory(historyResponse.data)
 			}
