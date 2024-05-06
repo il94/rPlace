@@ -174,19 +174,51 @@ export class CellService {
 	async verifyConditions(userId: number, price: number, isAdmin: boolean): Promise<boolean> {
 		const userDatas: Partial<User> = await this.userService.getUser(userId)
 
-		if (isAdmin || (this.verifyCooldown(userDatas.lastPut) && this.verifyWallet(userDatas.wallet, price)))
+		if (userDatas.role === Role.BAN)
+			return false
+
+		const currentEntry = new Date()
+
+		if (await this.verifyBot(userDatas.username, userDatas.lastPut, currentEntry, isAdmin))
+		{
+			await this.userService.setRole(1, userDatas.id, Role.BAN)
+			return false
+		}
+		if (isAdmin || (this.verifyCooldown(userDatas.lastPut, currentEntry) && this.verifyWallet(userDatas.wallet, price)))
 			return true
 		return false
 	}
 	
-	verifyCooldown(lastPut: Date): boolean {
-		const currentDate = new Date()
-		const difference = Math.abs(lastPut.getTime() / 1000 - currentDate.getTime() / 1000);
+	
+	verifyCooldown(lastEntry: Date, currentEntry: Date): boolean {
+		const difference = Math.abs(lastEntry.getTime() / 1000 - currentEntry.getTime() / 1000);
 		
 		return (difference >= 5)
 	}
 	
 	verifyWallet(wallet: number, price: number): boolean {
 		return (wallet >= price)
+	}
+
+	async verifyBot(username: string, lastEntry: Date, currentEntry: Date, isAdmin: boolean): Promise<boolean> {
+
+		if (isAdmin)
+			return true
+		
+		const lastEntries = await this.userService.getLastEntries(username, 2)
+		if (!lastEntries)
+			return true
+		const secondLastEntry = lastEntries[1]
+
+		const currentEntryDate = currentEntry.getTime() / 1000
+		const lastEntryDate = lastEntry.getTime() / 1000
+		const secondLastEntryDate = secondLastEntry.createdAt.getTime() / 1000
+		
+		const difference1 = Math.abs(currentEntryDate - lastEntryDate)
+		const difference2 = Math.abs(lastEntryDate - secondLastEntryDate)
+
+		const result = Math.abs(difference1 - difference2)
+
+		return (result < 0.1)
 	}
 }

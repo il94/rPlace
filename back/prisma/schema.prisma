@@ -16,6 +16,7 @@ datasource db {
 enum Role {
 	USER
 	ADMIN
+	BAN
 }
 
 model Grid {

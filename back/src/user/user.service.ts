@@ -98,6 +98,19 @@ export class UserService {
 		}
 	}
 
+	async getLastEntries(username: string, count: number) {
+		try {
+			const lastEntries = await this.repository.getLastEntries(username, count)
+		
+			if (lastEntries.length !== count)
+				return (null)
+			return (lastEntries)
+		}
+		catch (error) {
+			console.error(error)
+		}
+	}
+
 	async findRoot() {
 		try {
 			const username = process.env.ROOT_USERNAME

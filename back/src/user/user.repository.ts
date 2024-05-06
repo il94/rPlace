@@ -126,6 +126,20 @@ export class UserRepository {
 		return (userDatas)
 	}
 
+	async getLastEntries(username: string, count: number) {
+		const twoLastEntries = await this.prisma.history.findMany({
+			where: {
+				username: username
+			},
+			orderBy: {
+				id: 'desc'
+			},
+			take: count
+		})
+
+		return (twoLastEntries)
+	}
+
 	async findRoot(username: string): Promise<Partial<boolean>> {
 		const rootFounded = !!await this.prisma.user.findUnique({
 			where: {
