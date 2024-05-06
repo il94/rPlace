@@ -7,8 +7,9 @@ import { UserService } from './user.service';
 export class UserController {
 	constructor (private service: UserService) {}
 
+	// Change le role d'un user
 	@Patch(':id/role')
-	async setAdmin(@UserId() authId: number,
+	async setRole(@UserId() authId: number,
 	@Param('id', ParseIntPipe) targetId: number,
 	@Body('newRole') newRole: Role) {
 		await this.service.setRole(authId, targetId, newRole)

@@ -183,7 +183,6 @@ export class CellService {
 
 	// Calcule la difference entre les 3 dernieres entrees pour detecter l'utilisation de scripts
 	async verifyBot(username: string, lastEntry: Date, currentEntry: Date, isAdmin: boolean): Promise<boolean> {
-
 		if (isAdmin)
 			return true
 		

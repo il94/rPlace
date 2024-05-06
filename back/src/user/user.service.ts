@@ -18,176 +18,97 @@ export class UserService {
 			if (error instanceof Prisma.PrismaClientKnownRequestError)
 				throw new ConflictException("Username already taken")
 			
-			console.error(error)
 			throw error
 		}
 	}
 
+	// Cree le user root
 	async createRoot() {
-		try {
-			const username = process.env.ROOT_USERNAME
-			const hash = await argon2.hash(process.env.ROOT_PASSWORD)
-			await this.repository.createRoot(username, hash)
-		}
-		catch (error) {
-			console.error(error)
-		}
+		const username = process.env.ROOT_USERNAME
+		const hash = await argon2.hash(process.env.ROOT_PASSWORD)
+		await this.repository.createRoot(username, hash)
 	}
 
 	// Retourne un user
 	async getUser(userId: number) {
-		try {
-			const partialUser = await this.repository.getUserById(userId)
-			if (!partialUser)
-				throw new NotFoundException("User not found")
+		const partialUser = await this.repository.getUserById(userId)
+		if (!partialUser)
+			throw new NotFoundException("User not found")
 
-			return (partialUser)
-		}
-		catch (error) {
-			if (!(error instanceof NotFoundException))
-				console.error(error)
-			throw error
-		}
+		return (partialUser)
 	}
 
 	// Retourne un user
 	async getUserByUsername(username: string): Promise<Partial<User>> {
-		try {
-			const partialUser = await this.repository.getUserByUsername(username)
-			if (!partialUser)
-				throw new NotFoundException("User not found")
-	
-			return (partialUser)
-		}
-		catch (error) {
-			if (!(error instanceof NotFoundException))
-				console.error(error)
-			throw error
-		}
+		const partialUser = await this.repository.getUserByUsername(username)
+		if (!partialUser)
+			throw new NotFoundException("User not found")
+
+		return (partialUser)
 	}
 
 	// Retourne le username du user
 	async getUsername(userId: number) {
-		try {
-			const username = await this.repository.getUsername(userId)
-			if (!username)
-				throw new NotFoundException("User not found")
-			return (username)
-		}
-		catch (error) {
-			if (!(error instanceof NotFoundException))
-				console.error(error)
-			throw error
-		}
+		const username = await this.repository.getUsername(userId)
+		if (!username)
+			throw new NotFoundException("User not found")
+		return (username)
 	}
 
 	// Retourne le role du user
 	async getRole(userId: number) {
-		try {
-			const role = await this.repository.getRole(userId)
-			if (!role)
-				throw new NotFoundException("User not found")
-			return (role)
-		}
-		catch (error) {
-			if (!(error instanceof NotFoundException))
-				console.error(error)
-			throw error
-		}
-	}
-	
-	async getLastPutAndWallet(userId: number) {
-		try {
-			const userDatas = await this.repository.getLastPutAndWallet(userId)
-			return (userDatas)
-		}
-		catch (error) {
-			console.error(error)
-		}
+		const role = await this.repository.getRole(userId)
+		if (!role)
+			throw new NotFoundException("User not found")
+		return (role)
 	}
 
 	// Retourne les dernieres entrees du user
 	async getLastEntries(username: string, count: number): Promise<History[] | null> {
-		try {
-			const lastEntries = await this.repository.getLastEntries(username, count)
-		
-			if (lastEntries.length !== count)
-				return (null)
-			return (lastEntries)
-		}
-		catch (error) {
-			console.error(error)
-			throw error
-		}
+		const lastEntries = await this.repository.getLastEntries(username, count)
+	
+		if (lastEntries.length !== count)
+			return (null)
+		return (lastEntries)
 	}
 
-	async findRoot() {
-		try {
-			const username = process.env.ROOT_USERNAME
-			const rootFounded = await this.repository.findRoot(username)
+	// Verifie si le root existe
+	async rootExist(): Promise<boolean> {
+		const username = process.env.ROOT_USERNAME
+		const rootFounded = !!await this.repository.getUserByUsername(username)
 
-			return (rootFounded)
-		}
-		catch (error) {
-			console.error(error)
-		}
+		return (rootFounded)
 	}
 
 	// Verifie si le user est admin
 	async isAdmin(userId: number) {
-		try {
-			const role = await this.repository.getRole(userId)
-
-			return (role === Role.ADMIN)
-		}
-		catch (error) {
-			console.error(error)
-			throw error
-		}
+		const role = await this.repository.getRole(userId)
+		return (role === Role.ADMIN)
 	}
 
 	// Change le role d'un user
 	async setRole(authId: number, targetId: number, newRole: Role) {
-		try {
-			const authIsAdmin = await this.isAdmin(authId)
-			if (!authIsAdmin)
-				throw new ForbiddenException("You doesn't have permission for this action")
+		const authIsAdmin = await this.isAdmin(authId)
+		if (!authIsAdmin)
+			throw new ForbiddenException("You doesn't have permission for this action")
 
-			await this.repository.setRole(targetId, newRole)
-		}
-		catch (error) {
-			if (!(error instanceof ForbiddenException))
-				console.error(error)
-			throw error
-		}
+		await this.repository.setRole(targetId, newRole)
 	}
 
+	// Ajoute des points au user
 	async addPoints(userId: number, value: number) {
-		try {
-			await this.repository.addPoint(userId, value)
-		}
-		catch (error) {
-			console.error(error)
-		}
+		await this.repository.addPoint(userId, value)
 	}
 
+	// Retire des points au user
 	async removePoints(userId: number, value: number) {
-		try {
-			await this.repository.removePoints(userId, value)
-		}
-		catch (error) {
-			console.error(error)
-		}
+		await this.repository.removePoints(userId, value)
 	}
 
+	// Set la date de la derniere entree du user
 	async setLastInputDate(userId: number) {
-		try {
-			const currentDate = new Date()
-			await this.repository.setLastInputDate(userId, currentDate)
-		}
-		catch (error) {
-			console.error(error)
-		}
+		const currentDate = new Date()
+		await this.repository.setLastInputDate(userId, currentDate)
 	}
 
 }

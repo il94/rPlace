@@ -108,20 +108,6 @@ export class UserRepository {
 		return (role.role)
 	}
 
-	async getLastPutAndWallet(userId: number): Promise<Partial<User>> {
-		const userDatas: Partial<User> = await this.prisma.user.findFirst({
-			where: {
-				id: userId
-			},
-			select: {
-				wallet: true,
-				lastPut: true
-			}
-		})
-
-		return (userDatas)
-	}
-
 	async getLastEntries(username: string, count: number): Promise<History[] | null> {
 		const twoLastEntries = await this.prisma.history.findMany({
 			where: {
@@ -134,16 +120,6 @@ export class UserRepository {
 		})
 
 		return (twoLastEntries)
-	}
-
-	async findRoot(username: string): Promise<Partial<boolean>> {
-		const rootFounded = !!await this.prisma.user.findUnique({
-			where: {
-				username: username,
-			}
-		})
-
-		return (rootFounded)
 	}
 
 	async addPoint(userId: number, value: number) {

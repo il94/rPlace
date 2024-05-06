@@ -13,48 +13,37 @@ export class AuthService {
 
 	// Cree un compte et renvoie un token d'authentification
 	async signup(username: string, password: string): Promise<AuthType> {
-		try {
-			const hash = await argon2.hash(password)
+		const hash = await argon2.hash(password)
 
-			const user = await this.userService.createUser(username, hash)
-			
-			const token = this.signAccessToken(user.id)
-			// const refreshToken = this.signRefreshToken(user.id)
-			
-			// await this.repository.setRefreshToken(user.id, refreshToken)
-			
-			// delete user.refreshToken
+		const user = await this.userService.createUser(username, hash)
+		
+		const token = this.signAccessToken(user.id)
+		// const refreshToken = this.signRefreshToken(user.id)
+		
+		// await this.repository.setRefreshToken(user.id, refreshToken)
+		
+		// delete user.refreshToken
 
-			return ({ user, token })
-
-		}
-		catch (error) {
-			throw error
-		}
+		return ({ user, token })
 	}
 
 	// Renvoie un token d'authentification
 	async signin(username: string, password: string): Promise<AuthType> {
-		try {
-			const user = await this.userService.getUserByUsername(username)
-			if (!(await argon2.verify(user.hash, password)))
-				throw new NotFoundException("User not found")
-			else
-			{
-				const token = this.signAccessToken(user.id)
-				// const refreshToken = this.signRefreshToken(user.id)
-	
-				// await this.repository.setRefreshToken(user.id, refreshToken)
-			
-				delete user.hash
-				// delete user.refreshToken
+		const user = await this.userService.getUserByUsername(username)
+		if (!(await argon2.verify(user.hash, password)))
+			throw new NotFoundException("User not found")
+		else
+		{
+			const token = this.signAccessToken(user.id)
+			// const refreshToken = this.signRefreshToken(user.id)
 
-				return ({ user, token })
-			}	
-		}
-		catch (error) {
-			throw error
-		}
+			// await this.repository.setRefreshToken(user.id, refreshToken)
+		
+			delete user.hash
+			// delete user.refreshToken
+
+			return ({ user, token })
+		}	
 	}
 
 	// async logout(userId: number) {
@@ -68,6 +57,7 @@ export class AuthService {
 
 	/* ==================== UTILS ================== */
 
+	// Verifie si le token n'est pas expire
 	isNotExpired(expirationTimestamp: number): boolean {
 		const currentTimestamp = Math.floor(Date.now() / 1000);
 		return currentTimestamp < expirationTimestamp;
@@ -79,9 +69,10 @@ export class AuthService {
 		return (token)
 	}
 
-	signRefreshToken(userId: number) {
-		const refreshToken = this.jwt.sign({ userId: userId }, { secret: process.env.JWT_SECRET, expiresIn: config.expiresRefreshDuration })
-		return (refreshToken)
-	}
+	// Cree un refresh token
+	// signRefreshToken(userId: number) {
+	// 	const refreshToken = this.jwt.sign({ userId: userId }, { secret: process.env.JWT_SECRET, expiresIn: config.expiresRefreshDuration })
+	// 	return (refreshToken)
+	// }
 
 }

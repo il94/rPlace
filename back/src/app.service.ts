@@ -7,7 +7,7 @@ export class AppService implements OnApplicationBootstrap {
 
 	async onApplicationBootstrap() {
 		
-		const rootExist = await this.userService.findRoot()
+		const rootExist = await this.userService.rootExist()
 		if (!rootExist)
 		{
 			try {
