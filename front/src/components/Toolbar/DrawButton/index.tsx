@@ -6,7 +6,7 @@ import { GridContext } from "../../../contexts/GridContext";
 import { AuthContext } from "../../../contexts/AuthContext";
 import Cookies from "js-cookie";
 import { ErrorResponse, User } from "../../../utils/types";
-import { axiosHeaders, config } from "../../../utils/config";
+import { AxiosHeaders, config } from "../../../utils/config";
 
 type PropsDrawButton = {
 	cellId: number,
@@ -38,17 +38,17 @@ function DrawButton({ cellId, toolSelected, newColor, setCellFocused }: PropsDra
 			if (toolSelected === ToolsSet.PEN) {
 				await axios.post(`${import.meta.env.VITE_URL_BACK}/cell/${cellId}`, {
 					newColor: newColor
-				}, axiosHeaders)
+				}, new AxiosHeaders())
 			}
 			else if (toolSelected === ToolsSet.BOMB) {
 				await axios.post(`${import.meta.env.VITE_URL_BACK}/cell/${cellId}/zone`, {
 					newColor: newColor
-				}, axiosHeaders)
+				}, new AxiosHeaders())
 			}	
 			else if (toolSelected === ToolsSet.SCREEN) {
 				await axios.post(`${import.meta.env.VITE_URL_BACK}/cell/all`, {
 					newColor: newColor
-				}, axiosHeaders)
+				}, new AxiosHeaders())
 			}
 
 			setUserDatas((prevState: User) => ({

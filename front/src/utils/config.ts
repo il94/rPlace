@@ -1,8 +1,20 @@
 import Cookies from "js-cookie";
 
-export const axiosHeaders = {
+interface AxiosHeadersInterface {
 	headers: {
-		'Authorization': `Bearer ${Cookies.get("access_token")}`
+	  Authorization: string;
+	};
+  }
+  
+export class AxiosHeaders implements AxiosHeadersInterface {
+	headers: {
+		Authorization: string;
+	}
+
+	constructor() {
+		this.headers = {
+			'Authorization': `Bearer ${Cookies.get("access_token")}`
+		}
 	}
 }
 
