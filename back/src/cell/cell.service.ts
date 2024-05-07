@@ -159,7 +159,7 @@ export class CellService {
 
 		const currentEntry = new Date()
 
-		if (await this.verifyBot(userDatas.username, userDatas.lastPut, currentEntry, isAdmin))
+		if (!(await this.verifyBot(userDatas.username, userDatas.lastPut, currentEntry, isAdmin)))
 		{
 			await this.userService.setRole(1, userDatas.id, Role.BAN)
 			return false
@@ -200,6 +200,6 @@ export class CellService {
 
 		const result = Math.abs(difference1 - difference2)
 
-		return (result < 0.1)
+		return (result > 0.1)
 	}
 }
