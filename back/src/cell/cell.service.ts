@@ -200,6 +200,6 @@ export class CellService {
 
 		const result = Math.abs(difference1 - difference2)
 
-		return (result > 0.1)
+		return (result > 0.01)
 	}
 }
