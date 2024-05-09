@@ -35,6 +35,7 @@ services:
     container_name: front_rPlace
     ports:
       - '5173:5173'
+      - '4173:4173'
     depends_on:
       - back
     volumes:
