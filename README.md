@@ -9,7 +9,6 @@
 	https://rplace.transcendons.fr/
 </p>
 
-
 ## Description
 <p align="center">
 	Like the original r/Place, just come put your pixels !
@@ -48,13 +47,13 @@ After building, your app is running on the URL indicated in front .env file. (lo
 
 - Pen : Free. It just fills a pixel and earn you 1 coin.
 - Bomb : 15 coins. It explodes on the selected pixel and fills a large zone around it.
-- Screen: 9999 coins ..? I'll let you discover its effect :)
+- Screen : 9999 coins ..? I'll let you discover its effect :)
 
 ### Comming soon
 
+- Super pen : 3 coins. Its range is 3 times better than the pen, so it can draw 9 pixels at time.
 - Diamond hand : 30 coins. Upon purchase, every pixel drawn will earn you 2 coins for 5 minutes.
 - Fast pen : 30 coins. Upon purchase, the cooldown between 2 draws is divided by 5 for 1 minute.
-- Super pen : 3 coins. Its range is 3 times better than the pen, so it can draw 9 pixels at time.
 - Super bomb : 45 coins. Like the bomb, but in super version.
 - Secure pixel : 100 coins. The drawn pixel cannot be changed for 15 mins, except by Screen.
 - Timeless pixel : 500 coins. The drawn pixel cannot be changed for 60 mins. Even with the Screen.
