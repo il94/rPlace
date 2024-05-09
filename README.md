@@ -1,5 +1,5 @@
 <div align="center">
-	<img src="https://i.postimg.cc/4df82Wb6/Screen-Recording2024-05-08at02-08-24-ezgif-com-video-to-gif-converter.gif">
+	<img src="other/readme_images/main.gif">
 </div>
 
 <h1 align="center">
@@ -11,7 +11,9 @@
 
 
 ## Description
-Like the original r/Place, just come put your pixels !
+<p align="center">
+	Like the original r/Place, just come put your pixels !
+</p>
 
 ## Local installation
 
@@ -25,3 +27,34 @@ docker compose up --build
 ```
 
 After building, your app is running on the URL indicated in front .env file. (localhost:4173 by default)
+
+## How it works
+
+<div align="center">
+	<img src="other/readme_images/draw.gif">
+</div>
+<p align="center">
+	After creating your account, click on every pixel to colore them. All pixels drawn will earn you 1 coin. Call your friends to create your most beautiful works together !
+</p>
+
+## Shop
+
+<div align="center">
+	<img src="other/readme_images/toolbar.png">
+</div>
+<p align="center">
+	With coins, you can buy bonuses in the shop.
+</p>
+
+- Pen : Free. It just fills a pixel and earn you 1 coin.
+- Bomb : 15 coins. It explodes on the selected pixel and fills a large zone around it.
+- Screen: 9999 coins ..? I'll let you discover its effect :)
+
+### Comming soon
+
+- Diamond hand : 30 coins. Upon purchase, every pixel drawn will earn you 2 coins for 5 minutes.
+- Fast pen : 30 coins. Upon purchase, the cooldown between 2 draws is divided by 5 for 1 minute.
+- Super pen : 3 coins. Its range is 3 times better than the pen, so it can draw 9 pixels at time.
+- Super bomb : 45 coins. Like the bomb, but in super version.
+- Secure pixel : 100 coins. The drawn pixel cannot be changed for 15 mins, except by Screen.
+- Timeless pixel : 500 coins. The drawn pixel cannot be changed for 60 mins. Even with the Screen.
