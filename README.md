@@ -18,7 +18,7 @@
 
 - Step 1 : Install and run Docker [Documentation](https://docs.docker.com/engine/install/)
 
-- Step 2 : Clone project and rename the 3 ".env-example" files by ".env". Variables are already filled, but it is recommanded to replace them with your own values.
+- Step 2 : Clone project and rename the 3 ".env-example" files by ".env". Variables are already filled, but it is recommended to replace them with your own values.
 
 - Step 3 : On terminal, go to project folder and put :
 ```bash
