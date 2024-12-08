@@ -169,11 +169,11 @@ export class CellService {
 		return false
 	}
 	
-	// Verifie si l'entree est effectuee 5 secondes minimum apres la precedente
+	// Verifie si l'entree est effectuee 3 secondes minimum apres la precedente
 	verifyCooldown(lastEntry: Date, currentEntry: Date): boolean {
 		const difference = Math.abs(lastEntry.getTime() / 1000 - currentEntry.getTime() / 1000);
 		
-		return (difference >= 5)
+		return (difference >= 3)
 	}
 
 	// Verifie si le user a assez de points
