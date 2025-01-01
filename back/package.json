@@ -19,7 +19,8 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "setDatabase": "npx prisma generate && npx prisma migrate deploy",
-    "deploy": "npm install && npm run setDatabase && npm run build && npm run start:prod"
+    "deploy": "npm install && npm run setDatabase && npm run build && npm run start:prod",
+    "studio": "npx prisma studio"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -36,6 +37,7 @@
     "class-validator": "^0.14.1",
     "cookie-parser": "^1.4.6",
     "jsonwebtoken": "^9.0.2",
+    "pm2": "^5.4.3",
     "prisma": "^5.13.0",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1"
