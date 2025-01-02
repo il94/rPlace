@@ -6,7 +6,7 @@
 	Link
 </h1>
 <p align="center">
-	https://rplace.transcendons.fr/
+	https://rplace.ilandols.com/
 </p>
 
 ## Description
