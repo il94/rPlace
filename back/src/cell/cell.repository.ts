@@ -15,7 +15,7 @@ export class CellRepository {
 				history: {
 					create: [{
 						color: "#ffffff",
-						username: "r/Place",
+						username: "iPlace",
 						role: Role.ADMIN
 					}]
 				}

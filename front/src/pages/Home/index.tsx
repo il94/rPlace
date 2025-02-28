@@ -31,7 +31,7 @@ function Home() {
 
 	return (
 		<Style>
-			<Title onClick={determineTilteRedirect}>r/Place</Title>
+			<Title onClick={determineTilteRedirect}>iPlace</Title>
 			{
 				grid ?
 				<Grid />
