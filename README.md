@@ -6,7 +6,7 @@
 	Link
 </h1>
 <p align="center">
-	https://rplace.ilandols.com/
+	https://iplace.ilandols.com/
 </p>
 
 ## Description
